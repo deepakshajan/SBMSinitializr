@@ -18,31 +18,35 @@
  SOFTWARE.
  */
 
-package com.initializr.service.request;
+package com.initializr.process.operations;
 
-import com.initializr.exception.InvalidServiceRequestException;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.boot.test.context.SpringBootTest;
 
-import java.io.Serializable;
+
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 /**
- * Interface to be extended by all requests incoming to any service in the application.
+ * Test class for {@link ProcessThreadOperations}
  * @author Deepak Shajan
  */
-public interface ServiceRequest extends Serializable{
+@SpringBootTest
+@RunWith(MockitoJUnitRunner.class)
+public class ProcessThreadOperationsTest {
 
+    @Mock
+    Process process;
 
     /**
-     * Default method throws {@link InvalidServiceRequestException} if the {@link ServiceRequest#filterInvalidRequest()} returns true.
+     * Should destroy the process
      */
-    default void filter(){
-        if(filterInvalidRequest())
-            throw new InvalidServiceRequestException();
+    @Test
+    public void testDestroyProcessForcibily() {
+        new ProcessThreadOperations().destroyProcessForcibily(process);
+        verify(process, times(1)).destroyForcibly();
     }
-
-    /**
-     * Implementations should provide the logic for all invalid requests that the rest services must decline.
-     *
-     * <p>This method enables the {@link ServiceRequest} implementations to filter out any unwanted invocations.</p>
-     */
-    boolean filterInvalidRequest();
 }

@@ -18,31 +18,33 @@
  SOFTWARE.
  */
 
-package com.initializr.service.request;
+package com.initializr.context;
 
-import com.initializr.exception.InvalidServiceRequestException;
-
-import java.io.Serializable;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
- * Interface to be extended by all requests incoming to any service in the application.
+ * Test class for {@link CloseApplicationContextThread}
  * @author Deepak Shajan
  */
-public interface ServiceRequest extends Serializable{
+@SpringBootTest
+@RunWith(MockitoJUnitRunner.class)
+public class CloseApplicationContextThreadTest {
 
+    @Mock
+    ClassPathXmlApplicationContext context;
 
     /**
-     * Default method throws {@link InvalidServiceRequestException} if the {@link ServiceRequest#filterInvalidRequest()} returns true.
+     * Should close the application context.
      */
-    default void filter(){
-        if(filterInvalidRequest())
-            throw new InvalidServiceRequestException();
+    @Test
+    public void testRun() {
+        new CloseApplicationContextThread<>(context).run();
+        Mockito.verify(context, Mockito.times(1)).close();
     }
-
-    /**
-     * Implementations should provide the logic for all invalid requests that the rest services must decline.
-     *
-     * <p>This method enables the {@link ServiceRequest} implementations to filter out any unwanted invocations.</p>
-     */
-    boolean filterInvalidRequest();
 }

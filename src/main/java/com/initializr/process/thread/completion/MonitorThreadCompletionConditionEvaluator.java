@@ -29,7 +29,7 @@ import java.util.List;
  * This class is used to create the chain and execute the chain.
  * @author Deepak Shajan
  */
-public final class MonitorThreadCompletionConditionEvaluator {
+public class MonitorThreadCompletionConditionEvaluator {
 
     /**
      * This variable links all the chain links({@link MonitorThreadCompletionConditionChainLink}) and creates a chain.
@@ -50,7 +50,7 @@ public final class MonitorThreadCompletionConditionEvaluator {
      * is not applicable, returns null.
      * @throws IOException thrown since we read the log files
      */
-    public final Boolean evaluate(EvaluatorRequest evaluatorRequest) throws IOException {
+    public Boolean evaluate(EvaluatorRequest evaluatorRequest) throws IOException {
 
         for (MonitorThreadCompletionConditionChainLink evaluator : chain) {
             Boolean isCompleteOrFail = evaluator.execute(evaluatorRequest);

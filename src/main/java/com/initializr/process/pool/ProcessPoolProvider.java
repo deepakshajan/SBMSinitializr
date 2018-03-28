@@ -21,11 +21,14 @@
 package com.initializr.process.pool;
 
 
-import com.initializr.exception.ProcessNotFoundInPoolException;
-import com.initializr.process.thread.ProcessThread;
+ import com.initializr.exception.ProcessNotFoundInPoolException;
+ import com.initializr.process.thread.ProcessThread;
 
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+ import java.util.Collections;
+ import java.util.HashSet;
+ import java.util.Map;
+ import java.util.Set;
+ import java.util.concurrent.ConcurrentHashMap;
 
  /**
   * Enum singleton which holds the state of the application.
@@ -71,7 +74,7 @@ import java.util.concurrent.ConcurrentHashMap;
       * @return {@link ProcessPoolProvider#pool}
       */
     public Map<String, Process> getPool() {
-        return this.pool;
+        return this.pool != null ? this.pool : Collections.emptyMap();
     }
 
      /**
@@ -113,7 +116,8 @@ import java.util.concurrent.ConcurrentHashMap;
       * @param processIdentifer Unique identifier for each process, in our case the module name.
       */
     private void removeFromCompletedProcessIds(String processIdentifer) {
-        completedProcessIds.remove(processIdentifer);
+        if(null != completedProcessIds)
+            completedProcessIds.remove(processIdentifer);
     }
 
      /**
@@ -121,7 +125,7 @@ import java.util.concurrent.ConcurrentHashMap;
       * @return Process corresponding to the processIdentifier
       */
     public Process getProcessFromPool(String processIdentifer) {
-        return this.pool.get(processIdentifer);
+        return this.pool!= null ? this.pool.get(processIdentifer) : null;
     }
 
      /**
@@ -138,14 +142,15 @@ import java.util.concurrent.ConcurrentHashMap;
 
      /**
       * Removes a process from {@link ProcessPoolProvider#pool}
-      * @param processIdentifer Unique identifier for each process, in our case the module name.
+      * @param processIdentifier Unique identifier for each process, in our case the module name.
       * @return true is removed, else return false
       */
-    public boolean removeProcessFromPool(String processIdentifer) {
-        if(getProcessFromPool(processIdentifer) != null) {
+    public boolean removeProcessFromPool(String processIdentifier) {
+
+        if(getProcessFromPool(processIdentifier) != null) {
             int initialPoolSize = this.pool.size();
-            pool.remove(processIdentifer);
-            removeFromCompletedProcessIds(processIdentifer);
+            pool.remove(processIdentifier);
+            removeFromCompletedProcessIds(processIdentifier);
             int finalPoolSize = this.pool.size();
             return initialPoolSize == finalPoolSize + 1;
         }

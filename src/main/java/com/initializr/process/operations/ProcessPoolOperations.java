@@ -26,6 +26,7 @@ import com.initializr.process.pool.ProcessPoolProvider;
 import com.initializr.process.thread.ProcessThread;
 import org.springframework.stereotype.Component;
 
+import javax.validation.constraints.NotNull;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -34,7 +35,7 @@ import java.util.Map;
  * @author Deepak Shajan
  */
 @Component
-public final class ProcessPoolOperations {
+public class ProcessPoolOperations {
 
 
     /**
@@ -104,12 +105,11 @@ public final class ProcessPoolOperations {
 
         ProcessThreadOperations processThreadOperations = new ProcessThreadOperations();
         ProcessPoolProvider processPoolProvider = ProcessPoolProvider.getProcessPoolProvider();
-        Map<String, Process> processPool = processPoolProvider.getPool();
-        Process process = processPool.get(processIdentifier);
+        Process process = processPoolProvider.getProcessFromPool(processIdentifier);
         if(process == null)
             throw new ProcessNotFoundInPoolException();
         process.destroyForcibly();
-        processThreadOperations.destroyProcessForcibily(processPool.get(processIdentifier));
+        processThreadOperations.destroyProcessForcibily(process);
         return processPoolProvider.removeProcessFromPool(processIdentifier);
     }
 
@@ -126,6 +126,7 @@ public final class ProcessPoolOperations {
             Iterator<String> iter = processPool.keySet().iterator();
             iter.forEachRemaining(this::forceStopProcess);
         }
+
     }
 
     /**
@@ -133,12 +134,12 @@ public final class ProcessPoolOperations {
      * @param processIdentifier The unique identifier for the process.
      * @return true if the process is either started or is starting.Else returns false.
      */
-    public boolean isProcessRunning(String processIdentifier) {
+    public boolean isProcessRunning(@NotNull String processIdentifier) {
 
         ProcessPoolProvider processPoolProvider = ProcessPoolProvider.getProcessPoolProvider();
         Map<String, Process> pool = processPoolProvider.getPool();
         if(pool != null && pool.size()>0)
-            return pool.containsKey(processIdentifier);
+            return processIdentifier != null ? pool.containsKey(processIdentifier) : false;
         return false;
     }
 
@@ -152,6 +153,14 @@ public final class ProcessPoolOperations {
         ProcessPoolProvider processPoolProvider = ProcessPoolProvider.getProcessPoolProvider();
         boolean isCompleted = processPoolProvider.getProcessCompletionStatus(processIdentifier);
         return isCompleted;
+    }
+
+    /**
+     * Get the size of the {@link ProcessPoolProvider#pool}.
+     * @return
+     */
+    public int getCurrentProcessPoolSize() {
+        return ProcessPoolProvider.getProcessPoolProvider().getPool().size();
     }
 
 }

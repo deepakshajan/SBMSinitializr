@@ -21,6 +21,7 @@
 package com.initializr.service.request;
 
 
+import com.initializr.constants.BuildTypeConstant;
 import com.initializr.service.request.builder.ExecutionCommandBuilderChainLink;
 import com.initializr.service.request.builder.ExecutionCommandBuilderChain;
 
@@ -30,7 +31,7 @@ import javax.validation.constraints.NotNull;
  * Implementation for {@link StartProcessServiceRequest}. This is the request object accepted by the {@link com.initializr.service.StartProcessService} rest service.
  * @author Deepak Shajan
  */
-public final class StartProcessServiceRequestImpl implements StartProcessServiceRequest {
+public class StartProcessServiceRequestImpl implements StartProcessServiceRequest {
 
 
     /**
@@ -77,12 +78,33 @@ public final class StartProcessServiceRequestImpl implements StartProcessService
     @Override
     public String getExecutableCommand() {
 
+        filter();
+
         StringBuilder builder = new StringBuilder("");
 
         for(ExecutionCommandBuilderChainLink chainList : new ExecutionCommandBuilderChain())
             builder.append(chainList.execute(this));
 
-        return builder.toString();
+        return builder.toString().trim();
+    }
+
+    /**
+     *Method throws exception for invalid combination for the below list of values.
+     *
+     * <p>In this implementation we make sure that the {@link StartProcessServiceRequestImpl#buildType} is accompanied by atleast one among the following variables.</p>
+     *     <ul>
+     *         <li>{@link StartProcessServiceRequestImpl#runClean}</li>
+     *         <li>{@link StartProcessServiceRequestImpl#runTests}</li>
+     *         <li>{@link StartProcessServiceRequestImpl#runBoot}</li>
+     *     </ul>
+     */
+    @Override
+    public boolean filterInvalidRequest() {
+
+        if(BuildTypeConstant.BUILD_TYPE_MAVEN.equals(buildType) || BuildTypeConstant.BUILD_TYPE_GRADLE.contentEquals(buildType)){
+            return runClean == false && runTests == false && runBoot == false ? true : false;
+        }
+        return false;
     }
 
     @Override
@@ -119,4 +141,19 @@ public final class StartProcessServiceRequestImpl implements StartProcessService
         return runBoot;
     }
 
+    public void setBuildType(String buildType) {
+        this.buildType = buildType;
+    }
+
+    public void setRunClean(boolean runClean) {
+        this.runClean = runClean;
+    }
+
+    public void setRunTests(boolean runTests) {
+        this.runTests = runTests;
+    }
+
+    public void setRunBoot(boolean runBoot) {
+        this.runBoot = runBoot;
+    }
 }

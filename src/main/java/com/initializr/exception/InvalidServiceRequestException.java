@@ -18,31 +18,11 @@
  SOFTWARE.
  */
 
-package com.initializr.service.request;
-
-import com.initializr.exception.InvalidServiceRequestException;
-
-import java.io.Serializable;
+package com.initializr.exception;
 
 /**
- * Interface to be extended by all requests incoming to any service in the application.
+ * This runtime exception is intended to be thrown when the caller attempts to invoke a {@link com.initializr.service.Service} using an invalid {@link com.initializr.service.request.ServiceRequest}
  * @author Deepak Shajan
  */
-public interface ServiceRequest extends Serializable{
-
-
-    /**
-     * Default method throws {@link InvalidServiceRequestException} if the {@link ServiceRequest#filterInvalidRequest()} returns true.
-     */
-    default void filter(){
-        if(filterInvalidRequest())
-            throw new InvalidServiceRequestException();
-    }
-
-    /**
-     * Implementations should provide the logic for all invalid requests that the rest services must decline.
-     *
-     * <p>This method enables the {@link ServiceRequest} implementations to filter out any unwanted invocations.</p>
-     */
-    boolean filterInvalidRequest();
+public class InvalidServiceRequestException extends RuntimeException {
 }

@@ -71,9 +71,10 @@ public final class StartProcessService implements Service<StartProcessServiceReq
     public StartProcessServiceResponseImpl execute(@RequestBody StartProcessServiceRequestImpl request) throws Exception {
 
         ServiceResponse response = null;
+        response = new StartProcessServiceResponseImpl();
         try {
 
-            response = new StartProcessServiceResponseImpl();
+            request.filter();
             processInitializr.initializeProcess(request, response);
             startProcessMonitorThread(request);
 

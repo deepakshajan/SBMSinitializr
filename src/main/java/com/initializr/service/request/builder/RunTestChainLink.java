@@ -20,6 +20,8 @@
 
 package com.initializr.service.request.builder;
 
+import com.initializr.constants.BuildTypeConstant;
+import com.initializr.exception.UnSupportedBuildTypeException;
 import com.initializr.service.request.StartProcessServiceRequest;
 
 /**
@@ -45,6 +47,10 @@ public final class RunTestChainLink<RequestTypeT extends StartProcessServiceRequ
      */
     @Override
     public String logic(RequestTypeT request) {
-        return "test";
+        switch (request.getBuildType()) {
+            case BuildTypeConstant.BUILD_TYPE_MAVEN : return "test";
+            case BuildTypeConstant.BUILD_TYPE_GRADLE : return "test";
+        }
+        throw new UnSupportedBuildTypeException();
     }
 }

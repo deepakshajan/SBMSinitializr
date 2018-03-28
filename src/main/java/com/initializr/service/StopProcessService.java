@@ -60,6 +60,7 @@ public final class StopProcessService implements Service<StopProcessServiceReque
     @RequestMapping(value = "/stopProcess",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public StopProcessServiceResponseImpl execute(@RequestBody StopProcessServiceRequestImpl request) {
 
+        request.filter();
         boolean result = processPoolOperations.forceStopProcess(request.getModuleName());
         LOGGER.info("***** "+request.getModuleName()+" stopped successfully *****");
         return createResponse(result);

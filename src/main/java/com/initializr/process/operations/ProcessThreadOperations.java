@@ -22,8 +22,11 @@ package com.initializr.process.operations;
 
 import com.initializr.constants.LogConstant;
 import com.initializr.service.request.StartProcessServiceRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import javax.validation.constraints.NotNull;
 import java.io.File;
 import java.io.IOException;
 
@@ -32,7 +35,10 @@ import java.io.IOException;
  * @author Deepak Shajan
  */
 @Component
-public final class ProcessThreadOperations {
+public class ProcessThreadOperations {
+
+
+    public static final Logger LOGGER = LoggerFactory.getLogger(ProcessPoolOperations.class);
 
     /**
      * Start the execution of the process, ie start the spring boot microservice.
@@ -40,13 +46,14 @@ public final class ProcessThreadOperations {
      * @return the {@link Process} instance corresponding to microservice start operation.
      * @throws IOException any exception is thrown back to the user
      */
-    public Process startProcess(StartProcessServiceRequest request) throws IOException {
+    public Process startProcess(@NotNull StartProcessServiceRequest request) throws IOException {
 
         Process process = null;
         ProcessBuilder processBuilder = new ProcessBuilder(new String[]{"cmd", "/c", request.getExecutableCommand()});
         processBuilder.directory(new File(request.getExecutionDirectory()));
         processBuilder.redirectOutput(getLogFile(request));
         process = processBuilder.start();
+        LOGGER.info("***** "+ "Starting "+ request.getModuleName() +" *****");
 
         return process;
     }
@@ -57,8 +64,9 @@ public final class ProcessThreadOperations {
      * <p>Makes sure that the process or none of its child processes are alive.</p>
      * @param process
      */
-    void destroyProcessForcibily(Process process) {
-        process.children().forEach(this::destroyProcessForcibily);
+    void destroyProcessForcibily(@NotNull Process process) {
+        if(process.children() != null)
+            process.children().forEach(this::destroyProcessForcibily);
         process.destroyForcibly();
     }
 
@@ -67,7 +75,8 @@ public final class ProcessThreadOperations {
      * @param processHandle
      */
     private void destroyProcessForcibily(ProcessHandle processHandle) {
-        processHandle.children().forEach(this::destroyProcessForcibily);
+        if(processHandle.children() != null)
+            processHandle.children().forEach(this::destroyProcessForcibily);
         processHandle.destroyForcibly();
     }
 

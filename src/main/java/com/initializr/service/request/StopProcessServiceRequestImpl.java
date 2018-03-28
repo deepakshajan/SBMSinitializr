@@ -25,7 +25,7 @@ package com.initializr.service.request;
  * Implementation for {@link StopProcessServiceRequest}. This is the request object accepted by the {@link com.initializr.service.StopProcessService} rest service.
  * @author Deepak Shajan
  */
-public final class StopProcessServiceRequestImpl implements StopProcessServiceRequest {
+public class StopProcessServiceRequestImpl implements StopProcessServiceRequest {
 
     /**
      * Unique identifier for each microservice.
@@ -37,4 +37,11 @@ public final class StopProcessServiceRequestImpl implements StopProcessServiceRe
         return moduleName;
     }
 
+    /**
+     * @return {@code false} since there is nothing to be filtered
+     */
+    @Override
+    public boolean filterInvalidRequest() {
+        return false;
+    }
 }

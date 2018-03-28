@@ -29,7 +29,7 @@ import java.io.BufferedReader;
  * @author Deepak Shajan
  * @param <RequestTypeT> The type of the request from the caller
  */
-public final class EvaluatorRequest<RequestTypeT extends StartProcessServiceRequest> {
+public class EvaluatorRequest<RequestTypeT extends StartProcessServiceRequest> {
 
     /**
      * POJO class, the actual request of type {@link StartProcessServiceRequest} which is obtained from the caller.
