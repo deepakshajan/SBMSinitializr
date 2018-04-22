@@ -20,7 +20,7 @@
 
 package com.initializr.process.tree.builder;
 
-import com.initializr.constants.ProcessTreeConstants;
+import com.initializr.constants.ProcessTreeConstant;
 import com.initializr.process.tree.api.DTree;
 import com.initializr.utils.FileUtils;
 
@@ -50,7 +50,7 @@ public final class ProcessTreeBuilder {
     }
 
     private void initialiseProcessTreeBuilder(String clusterPath) {
-        processTree = new DTree<>(ProcessTreeConstants.ROOT);
+        processTree = new DTree<>(ProcessTreeConstant.ROOT);
         clusterPathFile = new FileUtils().getFile(clusterPath);
     }
 

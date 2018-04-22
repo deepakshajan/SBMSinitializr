@@ -20,12 +20,10 @@
 
 package com.initializr.constants;
 
-import org.springframework.cglib.core.Constants;
-
 /**
  * @author Deepak Shajan
  */
-public class ProcessTreeConstants implements Constants {
+public class ProcessTreeConstant implements Constant {
 
     public static final String ROOT = "root";
 

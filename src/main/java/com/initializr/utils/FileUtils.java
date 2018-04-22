@@ -20,7 +20,7 @@
 
 package com.initializr.utils;
 
-import com.initializr.constants.ProcessTreeConstants;
+import com.initializr.constants.ProcessTreeConstant;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
@@ -54,7 +54,7 @@ public class FileUtils {
     public Optional<File> getDepsFile(File file) {
 
         for(File fileIter : file.listFiles())
-            if(ProcessTreeConstants.DEPS_FILE.equals(fileIter.getName()))
+            if(ProcessTreeConstant.DEPS_FILE.equals(fileIter.getName()))
                 return Optional.ofNullable(fileIter);
         return Optional.empty();
     }
