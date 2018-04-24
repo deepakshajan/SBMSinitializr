@@ -61,6 +61,17 @@ public class ProcessPoolOperations {
     }
 
     /**
+     * Marks the process as  failed to start.
+     *
+     * <p>The <code>processIdentifier</code> will be added to the {@link ProcessPoolProvider#failedProcessIds}</p>
+     * @param processThread The {@link ProcessThread} instance in which the process is booting up.
+     */
+    public void markProcessAsFailed(ProcessThread processThread) {
+
+        markProcessAsFailed(processThread.getProcessIdentifier());
+    }
+
+    /**
      * Marks the process as successfully started.
      *
      * <p>The <code>processIdentifier</code> will be added to the {@link ProcessPoolProvider#completedProcessIds}</p>
@@ -70,6 +81,18 @@ public class ProcessPoolOperations {
 
         ProcessPoolProvider processPoolProvider = ProcessPoolProvider.getProcessPoolProvider();
         processPoolProvider.markProcessAsCompleted(processIdentifier);
+    }
+
+    /**
+     * Marks the process as failed to start.
+     *
+     * <p>The <code>processIdentifier</code> will be added to the {@link ProcessPoolProvider#failedProcessIds}</p>
+     * @param processIdentifier The module name of the process to be marked. Should be unique for each process.
+     */
+    public void markProcessAsFailed(String processIdentifier) {
+
+        ProcessPoolProvider processPoolProvider = ProcessPoolProvider.getProcessPoolProvider();
+        processPoolProvider.markProcessAsFailed(processIdentifier);
     }
 
     /**
@@ -148,11 +171,23 @@ public class ProcessPoolOperations {
      * @param processIdentifier The unique identifier for the process.
      * @return true if the process has started successfully,else returns false.
      */
-    public boolean isProcessCompleted(String processIdentifier) {
+    public boolean isProcessStarted(String processIdentifier) {
 
         ProcessPoolProvider processPoolProvider = ProcessPoolProvider.getProcessPoolProvider();
-        boolean isCompleted = processPoolProvider.getProcessCompletionStatus(processIdentifier);
-        return isCompleted;
+        boolean isStarted = processPoolProvider.isProcessStarted(processIdentifier);
+        return isStarted;
+    }
+
+    /**
+     * Checks if the process has failed to start.
+     * @param processIdentifier The unique identifier for the process.
+     * @return true if the process has failed,else returns false.
+     */
+    public boolean isProcessFailed(String processIdentifier) {
+
+        ProcessPoolProvider processPoolProvider = ProcessPoolProvider.getProcessPoolProvider();
+        boolean isFailed = processPoolProvider.isProcessFailed(processIdentifier);
+        return isFailed;
     }
 
     /**

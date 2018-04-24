@@ -24,12 +24,15 @@ import com.initializr.config.Configuration;
 import com.initializr.constants.LogConstant;
 import com.initializr.process.operations.ProcessPoolOperations;
 import com.initializr.process.pool.ProcessPoolProvider;
-import com.initializr.process.thread.completion.MonitorThreadCompletionConditionEvaluator;
 import com.initializr.process.thread.completion.EvaluatorRequest;
+import com.initializr.process.thread.completion.MonitorThreadCompletionConditionEvaluator;
 import com.initializr.service.request.ServiceRequest;
 import com.initializr.service.request.StartProcessServiceRequest;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.concurrent.Callable;
 
 /**
@@ -111,8 +114,9 @@ public final class MonitorThread implements Callable<Void> {
     private boolean checkAndUpdateCompletion(File file) throws IOException {
 
         String processIdentifier = request.getModuleName();
-        boolean isAlreadyCompleted = ProcessPoolProvider.getProcessPoolProvider().getProcessCompletionStatus(processIdentifier);
-        if(!isAlreadyCompleted)
+        boolean isAlreadyStarted = ProcessPoolProvider.getProcessPoolProvider().isProcessStarted(processIdentifier);
+        boolean isAlreadyFailed = ProcessPoolProvider.getProcessPoolProvider().isProcessFailed(processIdentifier);
+        if(!isAlreadyStarted && !isAlreadyFailed)
             return readLogAndUpdateCompletion(file);
         return false;
     }
@@ -120,34 +124,37 @@ public final class MonitorThread implements Callable<Void> {
     /**
      * Updates the {@link ProcessPoolProvider#completedProcessIds} set if the process has successfully started.
      * @param log log file which corresponds to the process
-     * @return true if proces has started successfully.
+     * @return true if process has started or failed successfully.
      * @throws IOException thrown from {@link MonitorThread#readLogAndUpdateCompletion(File)}
      */
     private boolean readLogAndUpdateCompletion(File log) throws IOException {
 
-        boolean isCompleteOrFail = checkForCompletionInLog(log);
-        if(isCompleteOrFail)
+        Boolean completionStatus = checkForCompletionInLog(log);
+        if(null != completionStatus && completionStatus)
             new ProcessPoolOperations().markProcessAsCompleted(request.getModuleName());
-        return isCompleteOrFail;
+        else if(null != completionStatus && !completionStatus)
+            new ProcessPoolOperations().markProcessAsFailed(request.getModuleName());
+        return completionStatus != null ? true : false;
     }
 
     /**
      * Parse the log file to check if the process has successfully started or failed.
      * @param log log corresponding to the process
-     * @return <code>true</code> if the process has started successfully.Else returns <code>false</code>.
+     * @return <code>true</code> if the process has started successfully.Returns <code>false</code> if process has failed. Else returns {@code null}.
      * @throws IOException thrown from {@link BufferedReader}
      */
-    private boolean checkForCompletionInLog(File log) throws IOException {
+    private Boolean checkForCompletionInLog(File log) throws IOException {
 
         if(log.canRead()) {
+            Boolean completionResult;
             String line;
             try(BufferedReader br = new BufferedReader(new FileReader(log))) {
                 while ((line = br.readLine()) != null)
-                    if(matchLinesForCompletion(line,br))
-                        return true;
+                    if(null != (completionResult = matchLinesForCompletion(line,br)))
+                        return completionResult;
             }
         }
-        return false;
+        return null;
     }
 
     /**
@@ -157,12 +164,12 @@ public final class MonitorThread implements Callable<Void> {
      * @return <code>true</code> if the line satisfies the condition for completion of process..Else returns <code>false</code>
      * @throws IOException thrown from {@link MonitorThreadCompletionConditionEvaluator#evaluate(EvaluatorRequest)}
      */
-    private boolean matchLinesForCompletion(String line, BufferedReader br) throws IOException {
+    private Boolean matchLinesForCompletion(String line, BufferedReader br) throws IOException {
 
         EvaluatorRequest evaluatorRequest = new EvaluatorRequest<StartProcessServiceRequest>(request, line, br);
 
         Boolean result = new MonitorThreadCompletionConditionEvaluator().evaluate(evaluatorRequest);
-        return result != null ? true :false;
+        return result;
     }
 
 }

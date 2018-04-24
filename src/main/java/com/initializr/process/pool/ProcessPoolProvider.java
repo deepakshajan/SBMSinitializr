@@ -48,7 +48,7 @@ package com.initializr.process.pool;
       *
       * <p>Processes are held with key value objects as described below
       * <ul>
-      *     <li><b><code>key</code></b> : unique identfier for the process, in this case the processIdentifier(same as module name)</li>
+      *     <li><b><code>key</code></b> : unique identifier for the process, in this case the processIdentifier(same as module name)</li>
       *     <li><b><code>value</code></b> : actual operating system process instance tied to a microservice</li>
       * </ul>
       * </p>
@@ -62,6 +62,13 @@ package com.initializr.process.pool;
       * <p><b>Note : Use a synchronized version of the {@link Set} as this will be concurrently accessed by many threads.</b></p>
       */
     private volatile Set<String> completedProcessIds = null;
+
+     /**
+      * This {@link Set} stores the list of all microservices/process that has failed to start.
+      *
+      * <p><b>Note : Use a synchronized version of the {@link Set} as this will be concurrently accessed by many threads.</b></p>
+      */
+     private volatile Set<String> failedProcessIds = null;
 
      /**
       * @return singleton instance of {@link ProcessPoolProvider}
@@ -97,6 +104,15 @@ package com.initializr.process.pool;
     }
 
      /**
+      * Marks the {@link Process}(microsercvice) as failed to start.
+      * @param processThread The thread in which the process is running.
+      * @throws ProcessNotFoundInPoolException Refer {@link ProcessNotFoundInPoolException}
+      */
+     public void markProcessAsFailed(ProcessThread processThread) throws ProcessNotFoundInPoolException {
+         markProcessAsFailed(processThread.getProcessIdentifier());
+     }
+
+     /**
       * Refer to {@link ProcessPoolProvider#markProcessAsCompleted(ProcessThread)}
       * @param processIdentifier Unique identifier for each process, in our case the module name.
       * @throws ProcessNotFoundInPoolException Refer {@link ProcessNotFoundInPoolException}
@@ -112,6 +128,21 @@ package com.initializr.process.pool;
     }
 
      /**
+      * Refer to {@link ProcessPoolProvider#markProcessAsFailed(ProcessThread)}
+      * @param processIdentifier Unique identifier for each process, in our case the module name.
+      * @throws ProcessNotFoundInPoolException Refer {@link ProcessNotFoundInPoolException}
+      */
+     public void markProcessAsFailed(String processIdentifier) throws ProcessNotFoundInPoolException {
+         if(null != getProcessFromPool(processIdentifier)) {
+             if(failedProcessIds == null)
+                 failedProcessIds = Collections.synchronizedSet(new HashSet<String>());
+             failedProcessIds.add(processIdentifier);
+         } else {
+             throw new ProcessNotFoundInPoolException();
+         }
+     }
+
+     /**
       * Removes a process from the {@link ProcessPoolProvider#completedProcessIds}.
       * @param processIdentifer Unique identifier for each process, in our case the module name.
       */
@@ -119,6 +150,15 @@ package com.initializr.process.pool;
         if(null != completedProcessIds)
             completedProcessIds.remove(processIdentifer);
     }
+
+     /**
+      * Removes a process from the {@link ProcessPoolProvider#failedProcessIds}.
+      * @param processIdentifer Unique identifier for each process, in our case the module name.
+      */
+     private void removeFromFailedProcessIds(String processIdentifer) {
+         if(null != failedProcessIds)
+             failedProcessIds.remove(processIdentifer);
+     }
 
      /**
       * @param processIdentifer Unique identifier for each process, in our case the module name.
@@ -133,12 +173,24 @@ package com.initializr.process.pool;
       * @param processIdentifier Unique identifier for each process, in our case the module name.
       * @return true if completed, else returns false.
       */
-    public boolean getProcessCompletionStatus(String processIdentifier) {
+    public boolean isProcessStarted(String processIdentifier) {
 
         if(completedProcessIds == null)
             return false;
         return completedProcessIds.contains(processIdentifier);
     }
+
+     /**
+      * Check if a process has been completed, ie if the microservice has successfully started.
+      * @param processIdentifier Unique identifier for each process, in our case the module name.
+      * @return true if completed, else returns false.
+      */
+     public boolean isProcessFailed(String processIdentifier) {
+
+         if(failedProcessIds == null)
+             return false;
+         return failedProcessIds.contains(processIdentifier);
+     }
 
      /**
       * Removes a process from {@link ProcessPoolProvider#pool}
@@ -151,6 +203,7 @@ package com.initializr.process.pool;
             int initialPoolSize = this.pool.size();
             pool.remove(processIdentifier);
             removeFromCompletedProcessIds(processIdentifier);
+            removeFromFailedProcessIds(processIdentifier);
             int finalPoolSize = this.pool.size();
             return initialPoolSize == finalPoolSize + 1;
         }

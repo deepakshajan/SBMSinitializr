@@ -24,7 +24,6 @@ import com.initializr.exception.ProcessNotFoundInPoolException;
 import com.initializr.process.pool.ProcessPoolProvider;
 import com.initializr.process.thread.ProcessThread;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -86,13 +85,57 @@ public class ProcessPoolOperationsTest {
      * Should update the {@link ProcessPoolProvider#completedProcessIds} list
      */
     @Test
+    public void testMarkProcessAsFailedWhenProcessIsInPool() {
+        ProcessPoolProvider.getProcessPoolProvider().addProcessToPool(processThread);
+
+        boolean initialFailStatus = ProcessPoolProvider.getProcessPoolProvider().isProcessFailed(processThread.getProcessIdentifier());
+        assertEquals(false, initialFailStatus);
+        new ProcessPoolOperations().markProcessAsFailed(processThread);
+        boolean failStatus = ProcessPoolProvider.getProcessPoolProvider().isProcessFailed(processThread.getProcessIdentifier());
+        assertEquals(true, failStatus);
+    }
+
+    /**
+     * Should throw exception({@link com.initializr.exception.ProcessNotFoundInPoolException})
+     */
+    @Test(expected = ProcessNotFoundInPoolException.class)
+    public void testMarkProcessAsFailedWhenProcessIsNotInPool() {
+        new ProcessPoolOperations().markProcessAsFailed(processThread);
+    }
+
+    /**
+     * Should update the {@link ProcessPoolProvider#completedProcessIds} list
+     */
+    @Test
+    public void testMarkProcessAsFailed1WhenProcessIsInPool() {
+        ProcessPoolProvider.getProcessPoolProvider().addProcessToPool(processThread);
+
+        boolean initialFailStatus = ProcessPoolProvider.getProcessPoolProvider().isProcessFailed(processThread.getProcessIdentifier());
+        assertEquals(false, initialFailStatus);
+        new ProcessPoolOperations().markProcessAsFailed(processThread.getProcessIdentifier());
+        boolean failStatus = ProcessPoolProvider.getProcessPoolProvider().isProcessFailed(processThread.getProcessIdentifier());
+        assertEquals(true, failStatus);
+    }
+
+    /**
+     * Should throw exception({@link com.initializr.exception.ProcessNotFoundInPoolException})
+     */
+    @Test(expected = ProcessNotFoundInPoolException.class)
+    public void testMarkProcessAsFailed1WhenProcessIsNotInPool() {
+        new ProcessPoolOperations().markProcessAsFailed(processThread.getProcessIdentifier());
+    }
+
+    /**
+     * Should update the {@link ProcessPoolProvider#completedProcessIds} list
+     */
+    @Test
     public void testMarkProcessAsCompletedWhenProcessIsInPool() {
         ProcessPoolProvider.getProcessPoolProvider().addProcessToPool(processThread);
 
-        boolean initialCompletionStatus = ProcessPoolProvider.getProcessPoolProvider().getProcessCompletionStatus(processThread.getProcessIdentifier());
+        boolean initialCompletionStatus = ProcessPoolProvider.getProcessPoolProvider().isProcessStarted(processThread.getProcessIdentifier());
         assertEquals(false, initialCompletionStatus);
         new ProcessPoolOperations().markProcessAsCompleted(processThread);
-        boolean completionStatus = ProcessPoolProvider.getProcessPoolProvider().getProcessCompletionStatus(processThread.getProcessIdentifier());
+        boolean completionStatus = ProcessPoolProvider.getProcessPoolProvider().isProcessStarted(processThread.getProcessIdentifier());
         assertEquals(true, completionStatus);
     }
 
@@ -111,10 +154,10 @@ public class ProcessPoolOperationsTest {
     public void testMarkProcessAsCompleted1WhenProcessIsInPool() {
         ProcessPoolProvider.getProcessPoolProvider().addProcessToPool(processThread);
 
-        boolean initialCompletionStatus = ProcessPoolProvider.getProcessPoolProvider().getProcessCompletionStatus(processThread.getProcessIdentifier());
+        boolean initialCompletionStatus = ProcessPoolProvider.getProcessPoolProvider().isProcessStarted(processThread.getProcessIdentifier());
         assertEquals(false, initialCompletionStatus);
         new ProcessPoolOperations().markProcessAsCompleted(processThread.getProcessIdentifier());
-        boolean completionStatus = ProcessPoolProvider.getProcessPoolProvider().getProcessCompletionStatus(processThread.getProcessIdentifier());
+        boolean completionStatus = ProcessPoolProvider.getProcessPoolProvider().isProcessStarted(processThread.getProcessIdentifier());
         assertEquals(true, completionStatus);
     }
 
@@ -149,10 +192,10 @@ public class ProcessPoolOperationsTest {
         new ProcessPoolOperations().addProcessToPool(processThread);
         new ProcessPoolOperations().markProcessAsCompleted(processThread);
 
-        boolean initialCompletionStatus = ProcessPoolProvider.getProcessPoolProvider().getProcessCompletionStatus(processThread.getProcessIdentifier());
+        boolean initialCompletionStatus = ProcessPoolProvider.getProcessPoolProvider().isProcessStarted(processThread.getProcessIdentifier());
         assertEquals(true, initialCompletionStatus);
         new ProcessPoolOperations().removeProcessFromPool(processThread);
-        boolean finalCompletionStatus = ProcessPoolProvider.getProcessPoolProvider().getProcessCompletionStatus(processThread.getProcessIdentifier());
+        boolean finalCompletionStatus = ProcessPoolProvider.getProcessPoolProvider().isProcessStarted(processThread.getProcessIdentifier());
         assertEquals(false, finalCompletionStatus);
     }
 
@@ -190,10 +233,10 @@ public class ProcessPoolOperationsTest {
         new ProcessPoolOperations().addProcessToPool(processThread);
         new ProcessPoolOperations().markProcessAsCompleted(processThread);
 
-        boolean initialCompletionStatus = ProcessPoolProvider.getProcessPoolProvider().getProcessCompletionStatus(processThread.getProcessIdentifier());
+        boolean initialCompletionStatus = ProcessPoolProvider.getProcessPoolProvider().isProcessStarted(processThread.getProcessIdentifier());
         assertEquals(true, initialCompletionStatus);
         new ProcessPoolOperations().forceStopProcess(processThread);
-        boolean finalCompletionStatus = ProcessPoolProvider.getProcessPoolProvider().getProcessCompletionStatus(processThread.getProcessIdentifier());
+        boolean finalCompletionStatus = ProcessPoolProvider.getProcessPoolProvider().isProcessStarted(processThread.getProcessIdentifier());
         assertEquals(false, finalCompletionStatus);
     }
 
@@ -237,10 +280,10 @@ public class ProcessPoolOperationsTest {
         new ProcessPoolOperations().addProcessToPool(processThread);
         new ProcessPoolOperations().markProcessAsCompleted(processThread);
 
-        boolean initialCompletionStatus = ProcessPoolProvider.getProcessPoolProvider().getProcessCompletionStatus(processThread.getProcessIdentifier());
+        boolean initialCompletionStatus = ProcessPoolProvider.getProcessPoolProvider().isProcessStarted(processThread.getProcessIdentifier());
         assertEquals(true, initialCompletionStatus);
         new ProcessPoolOperations().forceStopProcess(processThread);
-        boolean finalCompletionStatus = ProcessPoolProvider.getProcessPoolProvider().getProcessCompletionStatus(processThread.getProcessIdentifier());
+        boolean finalCompletionStatus = ProcessPoolProvider.getProcessPoolProvider().isProcessStarted(processThread.getProcessIdentifier());
         assertEquals(false, finalCompletionStatus);
     }
 
@@ -354,11 +397,11 @@ public class ProcessPoolOperationsTest {
         new ProcessPoolOperations().markProcessAsCompleted(processThread5);
 
         new ProcessPoolOperations().forceStopAllProcess();
-        assertEquals(false, ProcessPoolProvider.getProcessPoolProvider().getProcessCompletionStatus("testProcessIdentifier1"));
-        assertEquals(false, ProcessPoolProvider.getProcessPoolProvider().getProcessCompletionStatus("testProcessIdentifier2"));
-        assertEquals(false, ProcessPoolProvider.getProcessPoolProvider().getProcessCompletionStatus("testProcessIdentifier3"));
-        assertEquals(false, ProcessPoolProvider.getProcessPoolProvider().getProcessCompletionStatus("testProcessIdentifier4"));
-        assertEquals(false, ProcessPoolProvider.getProcessPoolProvider().getProcessCompletionStatus("testProcessIdentifier5"));
+        assertEquals(false, ProcessPoolProvider.getProcessPoolProvider().isProcessStarted("testProcessIdentifier1"));
+        assertEquals(false, ProcessPoolProvider.getProcessPoolProvider().isProcessStarted("testProcessIdentifier2"));
+        assertEquals(false, ProcessPoolProvider.getProcessPoolProvider().isProcessStarted("testProcessIdentifier3"));
+        assertEquals(false, ProcessPoolProvider.getProcessPoolProvider().isProcessStarted("testProcessIdentifier4"));
+        assertEquals(false, ProcessPoolProvider.getProcessPoolProvider().isProcessStarted("testProcessIdentifier5"));
     }
 
     /**
@@ -398,12 +441,45 @@ public class ProcessPoolOperationsTest {
      * Should return {@code true}
      */
     @Test
+    public void testIsProcessFailedShouldReturnTrue() {
+        new ProcessPoolOperations().addProcessToPool(processThread);
+        new ProcessPoolOperations().markProcessAsFailed(processThread);
+
+        boolean isFailed = new ProcessPoolOperations().isProcessFailed(processThread.getProcessIdentifier());
+        assertEquals(true, isFailed);
+    }
+
+    /**
+     * Should return {@code false}
+     */
+    @Test
+    public void testIsProcessFailedShouldReturnFalse() {
+        new ProcessPoolOperations().addProcessToPool(processThread);
+        new ProcessPoolOperations().markProcessAsFailed(processThread);
+
+        boolean isFailed = new ProcessPoolOperations().isProcessFailed("invalidProcessId");
+        assertEquals(false, isFailed);
+    }
+
+    /**
+     * Should return {@code false}
+     */
+    @Test
+    public void testIsProcessFailedShouldReturnFalseWhenNotingInPool() {
+        boolean isFailed = new ProcessPoolOperations().isProcessFailed("invalidProcessId");
+        assertEquals(false, isFailed);
+    }
+
+    /**
+     * Should return {@code true}
+     */
+    @Test
     public void testIsProcessCompletedShouldReturnTrue() {
         new ProcessPoolOperations().addProcessToPool(processThread);
         new ProcessPoolOperations().markProcessAsCompleted(processThread);
 
-        boolean isCompleted = new ProcessPoolOperations().isProcessCompleted(processThread.getProcessIdentifier());
-        assertEquals(true, isCompleted);
+        boolean isStarted = new ProcessPoolOperations().isProcessStarted(processThread.getProcessIdentifier());
+        assertEquals(true, isStarted);
     }
 
     /**
@@ -414,8 +490,8 @@ public class ProcessPoolOperationsTest {
         new ProcessPoolOperations().addProcessToPool(processThread);
         new ProcessPoolOperations().markProcessAsCompleted(processThread);
 
-        boolean isCompleted = new ProcessPoolOperations().isProcessCompleted("invalidProcessId");
-        assertEquals(false, isCompleted);
+        boolean isStarted = new ProcessPoolOperations().isProcessStarted("invalidProcessId");
+        assertEquals(false, isStarted);
     }
 
     /**
@@ -423,8 +499,8 @@ public class ProcessPoolOperationsTest {
      */
     @Test
     public void testIsProcessCompletedShouldReturnFalseWhenNotingInPool() {
-        boolean isCompleted = new ProcessPoolOperations().isProcessCompleted("invalidProcessId");
-        assertEquals(false, isCompleted);
+        boolean isStarted = new ProcessPoolOperations().isProcessStarted("invalidProcessId");
+        assertEquals(false, isStarted);
     }
 
     /**

@@ -22,7 +22,6 @@ package com.initializr.service;
 
 import com.initializr.exception.ProcessNotFoundInPoolException;
 import com.initializr.process.operations.ProcessPoolOperations;
-import com.initializr.process.pool.ProcessPoolProvider;
 import com.initializr.process.thread.ProcessThread;
 import com.initializr.service.request.StopProcessServiceRequestImpl;
 import org.junit.Before;
@@ -84,12 +83,12 @@ public class StopProcessServiceTest {
         new ProcessPoolOperations().addProcessToPool(processThread);
         new ProcessPoolOperations().markProcessAsCompleted(processThread.getProcessIdentifier());
         when(request.getModuleName()).thenReturn("testProcessId");
-        boolean isCompleted = new ProcessPoolOperations().isProcessCompleted(processThread.getProcessIdentifier());
-        assertEquals(true, isCompleted);
+        boolean isProcessStarted = new ProcessPoolOperations().isProcessStarted(processThread.getProcessIdentifier());
+        assertEquals(true, isProcessStarted);
 
         stopProcessService.execute(request);
-        isCompleted = new ProcessPoolOperations().isProcessCompleted(processThread.getProcessIdentifier());
-        assertEquals(false, isCompleted);
+        isProcessStarted = new ProcessPoolOperations().isProcessStarted(processThread.getProcessIdentifier());
+        assertEquals(false, isProcessStarted);
     }
 
     /**

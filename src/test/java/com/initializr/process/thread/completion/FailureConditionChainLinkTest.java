@@ -49,7 +49,18 @@ public class FailureConditionChainLinkTest {
      * Should return {@code true}
      */
     @Test
-    public void testAppliesReturnTrue() {
+    public void testAppliesReturnTrueForMaven() {
+        when(evaluatorRequest.getLogLine()).thenReturn("[INFO] BUILD FAILURE");
+
+        boolean result = new FailureConditionChainLink().applies(evaluatorRequest);
+        assertEquals(true, result);
+    }
+
+    /**
+     * Should return {@code true}
+     */
+    @Test
+    public void testAppliesReturnTrueForGradle() {
         when(evaluatorRequest.getLogLine()).thenReturn("[INFO] BUILD FAILURE");
 
         boolean result = new FailureConditionChainLink().applies(evaluatorRequest);

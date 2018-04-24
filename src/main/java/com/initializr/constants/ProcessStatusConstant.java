@@ -42,9 +42,17 @@ public final class ProcessStatusConstant implements Constant{
 
     /**
      * Regular expression pattern used to determine if the spring boot microservice application startup
+     * has failed.<b>This variable is applicable only in case of maven buil;d type.</b>
+     *
+     * * <p>This pattern is matched with the log files to determine that startup has failed.</p>
+     */
+    public static final String PROCESS_FAIL_REGEX_MAVEN = ".+BUILD FAILURE";
+
+    /**
+     * Regular expression pattern used to determine if the spring boot microservice application startup
      * has failed.
      *
      * * <p>This pattern is matched with the log files to determine that startup has failed.</p>
      */
-    public static final String PROCESS_FAIL_REGEX = ".+BUILD FAILURE";
+    public static final String PROCESS_FAIL_REGEX_GRADLE = ":bootRun.+FAILED";
 }

@@ -28,7 +28,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -101,11 +100,11 @@ public class ApplicationShutDownHookBeanTest {
         new ProcessPoolOperations().markProcessAsCompleted(processThread3);
 
         applicationShutDownHookBean.execute();
-        boolean isComplete = ProcessPoolProvider.getProcessPoolProvider().getProcessCompletionStatus(processThread1.getProcessIdentifier());
-        assertEquals(false, isComplete);
-        isComplete = ProcessPoolProvider.getProcessPoolProvider().getProcessCompletionStatus(processThread2.getProcessIdentifier());
-        assertEquals(false, isComplete);
-        isComplete = ProcessPoolProvider.getProcessPoolProvider().getProcessCompletionStatus(processThread3.getProcessIdentifier());
-        assertEquals(false, isComplete);
+        boolean isProcessStarted = ProcessPoolProvider.getProcessPoolProvider().isProcessStarted(processThread1.getProcessIdentifier());
+        assertEquals(false, isProcessStarted);
+        isProcessStarted = ProcessPoolProvider.getProcessPoolProvider().isProcessStarted(processThread2.getProcessIdentifier());
+        assertEquals(false, isProcessStarted);
+        isProcessStarted = ProcessPoolProvider.getProcessPoolProvider().isProcessStarted(processThread3.getProcessIdentifier());
+        assertEquals(false, isProcessStarted);
     }
 }

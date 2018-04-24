@@ -31,13 +31,14 @@ import com.initializr.constants.ProcessStatusConstant;
 final class FailureConditionChainLink implements MonitorThreadCompletionConditionChainLink {
 
     /**
-     *  Check if the current log line to be evaluated matches with the process fail regular expression pattern. If yes return true.
+     *  Check if the current log line to be evaluated matches with the process fail regular expression patterns. If yes return true.
      * @param evaluatorRequest Request on which the chain operates, refer {@link EvaluatorRequest}
      * @return true if the pattern matches,else returns false.
      */
     @Override
     public boolean applies(EvaluatorRequest evaluatorRequest) {
-        return evaluatorRequest.getLogLine().matches(ProcessStatusConstant.PROCESS_FAIL_REGEX);
+        return evaluatorRequest.getLogLine().matches(ProcessStatusConstant.PROCESS_FAIL_REGEX_MAVEN)
+                || evaluatorRequest.getLogLine().matches(ProcessStatusConstant.PROCESS_FAIL_REGEX_GRADLE);
     }
 
     /**
