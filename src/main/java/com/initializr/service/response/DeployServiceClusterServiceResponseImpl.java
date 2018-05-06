@@ -20,6 +20,8 @@
 
 package com.initializr.service.response;
 
+import com.initializr.backbone.ServiceResponse;
+
 /**
  * @author Deepak Shajan
  */

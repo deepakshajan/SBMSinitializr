@@ -18,31 +18,48 @@
  SOFTWARE.
  */
 
-package com.initializr.service.request;
+package com.initializr.utils;
 
-import com.initializr.exception.InvalidServiceRequestException;
-
-import java.io.Serializable;
+import com.initializr.backbone.SBMSLock;
+import com.initializr.backbone.SBMSUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 /**
- * Interface to be extended by all requests incoming to any service in the application.
  * @author Deepak Shajan
  */
-public interface ServiceRequest extends Serializable{
+@Component
+@Scope(value = "prototype")
+public class ThreadUtils implements SBMSUtils {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(ThreadUtils.class);
 
-    /**
-     * Default method throws {@link InvalidServiceRequestException} if the {@link ServiceRequest#filterInvalidRequest()} returns true.
-     */
-    default void filter(){
-        if(filterInvalidRequest())
-            throw new InvalidServiceRequestException();
+    public void sleep(long timeInMilliSeconds) {
+
+        try {
+            Thread.sleep(timeInMilliSeconds);
+        } catch (InterruptedException e) {
+            LOGGER.error(e.getStackTrace().toString());
+        }
     }
 
-    /**
-     * Implementations should provide the logic for all invalid requests that the rest services must decline.
-     *
-     * <p>This method enables the {@link ServiceRequest} implementations to filter out any unwanted invocations.</p>
-     */
-    boolean filterInvalidRequest();
+    public void waitWithLock(SBMSLock lock) {
+
+        try {
+            synchronized (lock) {
+                lock.wait();
+            }
+        } catch (InterruptedException e) {
+            LOGGER.error(e.getStackTrace().toString());
+        }
+    }
+
+    public void notifyAllWithLock(SBMSLock lock) {
+
+        synchronized (lock) {
+            lock.notifyAll();
+        }
+    }
 }

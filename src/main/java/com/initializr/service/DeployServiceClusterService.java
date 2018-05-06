@@ -20,9 +20,10 @@
 
 package com.initializr.service;
 
+import com.initializr.backbone.SBMSService;
+import com.initializr.process.ProcessTreeDeployer;
 import com.initializr.process.tree.ProcessTreeProvider;
-import com.initializr.process.tree.api.DTree;
-import com.initializr.service.request.DeployServiceClusterRequestImpl;
+import com.initializr.service.request.DeployServiceClusterServiceRequestImpl;
 import com.initializr.service.response.DeployServiceClusterServiceResponseImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -37,22 +38,23 @@ import java.io.IOException;
  */
 @RestController
 @RequestMapping(value = "/initializr")
-public class DeployServiceClusterService implements Service<DeployServiceClusterRequestImpl, DeployServiceClusterServiceResponseImpl> {
+public class DeployServiceClusterService implements SBMSService<DeployServiceClusterServiceRequestImpl, DeployServiceClusterServiceResponseImpl> {
 
     @Autowired
     ProcessTreeProvider processTreeProvider;
 
+    @Autowired
+    ProcessTreeDeployer processTreeDeployer;
+
     @Override
     @RequestMapping(value = "/deploy", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public DeployServiceClusterServiceResponseImpl execute(@RequestBody DeployServiceClusterRequestImpl request) throws Exception {
+    public DeployServiceClusterServiceResponseImpl execute(@RequestBody DeployServiceClusterServiceRequestImpl request) throws Exception {
 
-        DTree dTree = null;
         DeployServiceClusterServiceResponseImpl response = null;
 
         try {
             response = createServiceResponse();
-            dTree = processTreeProvider.getProcessTree(request.getCluserPath());
-            iterateOverTreeAndStartProcessInOrder(dTree);
+            processTreeDeployer.iterateOverTreeAndStartProcessInOrder(request);
         } catch (IOException e) {
             handleException(e, response);
         }
@@ -62,11 +64,6 @@ public class DeployServiceClusterService implements Service<DeployServiceCluster
     private void handleException(Exception e, DeployServiceClusterServiceResponseImpl response) throws Exception {
         response.setSuccess(false);
         throw e;
-    }
-
-    private void iterateOverTreeAndStartProcessInOrder(DTree dTree) {
-        //TODO iterate over the processtree and call the service to start each individual process
-
     }
 
     private DeployServiceClusterServiceResponseImpl createServiceResponse() {

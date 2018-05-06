@@ -20,6 +20,7 @@
 
 package com.initializr.process.thread;
 
+import com.initializr.backbone.SBMSThread;
 import com.initializr.process.operations.ProcessPoolOperations;
 import com.initializr.process.operations.ProcessThreadOperations;
 import com.initializr.service.request.StartProcessServiceRequest;
@@ -34,7 +35,7 @@ import java.util.concurrent.Callable;
  * .{@link ProcessThread}. The {@link ProcessThread} initiates the start operation of the process. Each {@link ProcessThread} starts only a single process.</p>
  * @author Deepak Shajan
  */
-public class ProcessThread implements Callable<Boolean> {
+public class ProcessThread implements SBMSThread<Boolean> {
 
     /**
      * The request sent by the caller on the service {@link com.initializr.service.StartProcessService}.

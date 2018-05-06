@@ -58,6 +58,7 @@ public class SbmSinitializrApplication {
 		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
 		executor.setCorePoolSize(Configuration.getConfiguration().getCoreThreadCount());
 		executor.setMaxPoolSize(Configuration.getConfiguration().getMaxThreadCount());
+		executor.setQueueCapacity(Configuration.getConfiguration().getThreadQueueCapacity());
 		executor.setThreadNamePrefix(TaskConstant.PROCESS_TASK_EXECUTER_NAME);
 		return executor;
 	}
@@ -67,7 +68,18 @@ public class SbmSinitializrApplication {
 		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
 		executor.setCorePoolSize(Configuration.getConfiguration().getCoreThreadCount());
 		executor.setMaxPoolSize(Configuration.getConfiguration().getMaxThreadCount());
+		executor.setQueueCapacity(Configuration.getConfiguration().getThreadQueueCapacity());
 		executor.setThreadNamePrefix(TaskConstant.MONITOR_TASK_EXECUTER_NAME);
+		return executor;
+	}
+
+	@Bean(name = "smartProcessTaskExecutor")
+	public ThreadPoolTaskExecutor smartProcessTaskExecutor() {
+		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+		executor.setCorePoolSize(Configuration.getConfiguration().getCoreThreadCount());
+		executor.setMaxPoolSize(Configuration.getConfiguration().getMaxThreadCount());
+		executor.setQueueCapacity(Configuration.getConfiguration().getThreadQueueCapacity());
+		executor.setThreadNamePrefix(TaskConstant.SMART_PROCESS_TASK_EXECUTER_NAME);
 		return executor;
 	}
 

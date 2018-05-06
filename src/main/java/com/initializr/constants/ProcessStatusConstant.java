@@ -20,10 +20,12 @@
 
 package com.initializr.constants;
 
+import com.initializr.backbone.SBMSConstant;
+
 /**
  * All constants related to the status of the processes(microservice) are held here.
  */
-public final class ProcessStatusConstant implements Constant{
+public final class ProcessStatusConstant implements SBMSConstant {
 
     /**
      * Regular expression pattern used to determine if the embedded tomcat in each spring boot microservice

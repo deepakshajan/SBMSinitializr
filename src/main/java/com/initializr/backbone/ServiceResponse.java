@@ -18,7 +18,7 @@
  SOFTWARE.
  */
 
-package com.initializr.service.response;
+package com.initializr.backbone;
 
 import java.io.Serializable;
 

@@ -18,22 +18,10 @@
  SOFTWARE.
  */
 
-package com.initializr.service.request;
+package com.initializr.backbone;
 
 /**
  * @author Deepak Shajan
  */
-public class DeployServiceClusterRequestImpl implements DeployServiceClusterServiceRequest {
-
-    String clusterPath;
-
-    @Override
-    public String getCluserPath() {
-        return clusterPath;
-    }
-
-    @Override
-    public void setClusterPath(String clusterPath) {
-        this.clusterPath = clusterPath;
-    }
+public interface SBMSLock {
 }

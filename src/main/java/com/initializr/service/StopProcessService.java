@@ -20,6 +20,7 @@
 
 package com.initializr.service;
 
+import com.initializr.backbone.SBMSService;
 import com.initializr.process.operations.ProcessPoolOperations;
 import com.initializr.service.request.StopProcessServiceRequestImpl;
 import com.initializr.service.response.StopProcessServiceResponseImpl;
@@ -40,7 +41,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/initializr")
-public final class StopProcessService implements Service<StopProcessServiceRequestImpl, StopProcessServiceResponseImpl> {
+public final class StopProcessService implements SBMSService<StopProcessServiceRequestImpl, StopProcessServiceResponseImpl> {
 
 
     @Autowired

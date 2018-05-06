@@ -18,13 +18,18 @@
  SOFTWARE.
  */
 
-package com.initializr.exception;
+package com.initializr.process.thread.lock;
 
-import com.initializr.backbone.SBMSServiceRequest;
+import com.initializr.backbone.SBMSLock;
 
 /**
- * This runtime exception is intended to be thrown when the caller attempts to invoke a {@link com.initializr.service.Service} using an invalid {@link SBMSServiceRequest}
  * @author Deepak Shajan
  */
-public class InvalidServiceRequestException extends RuntimeException {
+public enum SmartProcessThreadLock implements SBMSLock {
+
+    INSTANCE;
+
+    public static SmartProcessThreadLock getLock() {
+        return INSTANCE;
+    }
 }

@@ -21,11 +21,13 @@
 package com.initializr.constants;
 
 
+import com.initializr.backbone.SBMSConstant;
+
 /**
  * All constants related to the various build types supported are held here.
  * @author Deepak Shajan
  */
-public final class BuildTypeConstant implements Constant{
+public final class BuildTypeConstant implements SBMSConstant{
 
     /**
      * The microservice is to be started using maven.

@@ -22,6 +22,7 @@ package com.initializr.process.operations;
 
 import com.initializr.constants.LogConstant;
 import com.initializr.service.request.StartProcessServiceRequest;
+import com.initializr.utils.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -48,10 +49,11 @@ public class ProcessThreadOperations {
      */
     public Process startProcess(@NotNull StartProcessServiceRequest request) throws IOException {
 
-        Process process = null;
+        Process process;
         ProcessBuilder processBuilder = new ProcessBuilder(new String[]{"cmd", "/c", request.getExecutableCommand()});
         processBuilder.directory(new File(request.getExecutionDirectory()));
         processBuilder.redirectOutput(getLogFile(request));
+        clearOutputDirectory(request);
         process = processBuilder.start();
         LOGGER.info("***** "+ "Starting "+ request.getModuleName() +" *****");
 
@@ -93,10 +95,15 @@ public class ProcessThreadOperations {
         File file = new File(LogConstant.LOG_DIRECTORY);
         if(!file.exists())
             file.mkdir();
-        file = new File(".//" + LogConstant.LOG_DIRECTORY +"//" + request.getModuleName()+"."+LogConstant.LOG_FILE_EXTENSION_TYPE);
+        String filePath = ".//" + LogConstant.LOG_DIRECTORY +"//" + request.getModuleName()+"."+LogConstant.LOG_FILE_EXTENSION_TYPE;
+        file = new FileUtils().createNewFile(filePath);
         if(!file.exists())
             file.createNewFile();
         return  file;
+    }
+
+    private void clearOutputDirectory(StartProcessServiceRequest request) {
+        new FileUtils().clearFolder(".//" + LogConstant.LOG_DIRECTORY);
     }
 
 }

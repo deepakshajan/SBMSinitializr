@@ -18,13 +18,10 @@
  SOFTWARE.
  */
 
-package com.initializr.exception;
-
-import com.initializr.backbone.SBMSServiceRequest;
+package com.initializr.backbone;
 
 /**
- * This runtime exception is intended to be thrown when the caller attempts to invoke a {@link com.initializr.service.Service} using an invalid {@link SBMSServiceRequest}
  * @author Deepak Shajan
  */
-public class InvalidServiceRequestException extends RuntimeException {
+public interface SBMSUtils {
 }

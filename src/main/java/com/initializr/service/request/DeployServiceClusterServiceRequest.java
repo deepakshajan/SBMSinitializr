@@ -20,12 +20,23 @@
 
 package com.initializr.service.request;
 
+
+import com.initializr.backbone.SBMSServiceRequest;
+
 /**
  * @author Deepak Shajan
  */
-public interface DeployServiceClusterServiceRequest {
+public interface DeployServiceClusterServiceRequest extends SBMSServiceRequest {
 
     String getCluserPath();
 
     void setClusterPath(String clusterPath);
+
+    String getBuildType();
+
+    boolean isRunClean();
+
+    boolean isRunTests();
+
+    boolean isRunBoot();
 }

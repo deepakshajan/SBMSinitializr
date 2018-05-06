@@ -21,12 +21,13 @@
 package com.initializr.constants;
 
 import com.initializr.SbmSinitializrApplication;
+import com.initializr.backbone.SBMSConstant;
 
 /**
  * All constants related to the {@link org.springframework.core.task.TaskExecutor}'s used are held here.
  * @author Deepak Shajan
  */
-public final class TaskConstant implements Constant {
+public final class TaskConstant implements SBMSConstant {
 
     /**
      *  Unique identifier for the {@link SbmSinitializrApplication#processTaskExecutor()}
@@ -37,4 +38,9 @@ public final class TaskConstant implements Constant {
      *  Unique identifier for the {@link SbmSinitializrApplication#monitorTaskExecutor()} ()}
      */
     public static final String MONITOR_TASK_EXECUTER_NAME = "monitor_task_executor";
+
+    /**
+     *  Unique identifier for the {@link SbmSinitializrApplication#smartProcessTaskExecutor()}
+     */
+    public static final String SMART_PROCESS_TASK_EXECUTER_NAME = "smart_process_task_executor";
 }

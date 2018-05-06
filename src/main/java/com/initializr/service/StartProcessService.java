@@ -20,13 +20,12 @@
 
 package com.initializr.service;
 
+import com.initializr.backbone.SBMSService;
 import com.initializr.process.ProcessInitializr;
 import com.initializr.process.thread.MonitorThread;
 import com.initializr.service.request.StartProcessServiceRequestImpl;
+import com.initializr.backbone.ServiceResponse;
 import com.initializr.service.response.StartProcessServiceResponseImpl;
-import com.initializr.service.response.ServiceResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
@@ -47,7 +46,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/initializr")
-public final class StartProcessService implements Service<StartProcessServiceRequestImpl,StartProcessServiceResponseImpl> {
+public final class StartProcessService implements SBMSService<StartProcessServiceRequestImpl,StartProcessServiceResponseImpl> {
 
     @Autowired
     private ProcessInitializr processInitializr;

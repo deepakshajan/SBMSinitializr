@@ -21,13 +21,15 @@
 package com.initializr.service.request;
 
 
+import com.initializr.backbone.SBMSServiceRequest;
+
 /**
  * Interface representing the request to be triggered by the service invoker inorder to stop a process.
  *
  * <p>Implementations of this interface contains info about the microservice to be stopped.</p>
  * @author Deepak Shajan
  */
-public interface StopProcessServiceRequest extends ServiceRequest {
+public interface StopProcessServiceRequest extends SBMSServiceRequest {
 
     /**
      * Unique identifier for each microservice.

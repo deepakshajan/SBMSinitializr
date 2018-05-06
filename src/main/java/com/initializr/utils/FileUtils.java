@@ -20,7 +20,9 @@
 
 package com.initializr.utils;
 
-import com.initializr.constants.ProcessTreeConstant;
+import com.initializr.backbone.SBMSUtils;
+import com.initializr.constants.FileConstant;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
@@ -36,7 +38,13 @@ import java.util.Optional;
  * @author Deepak Shajan
  */
 @Component
-public class FileUtils {
+@Scope(value = "prototype")
+public class FileUtils implements SBMSUtils{
+
+    public File createNewFile(String path) {
+
+        return new File(path);
+    }
 
     public File getFile(String path) {
 
@@ -51,15 +59,33 @@ public class FileUtils {
         return Arrays.asList( parentFile.listFiles());
     }
 
+    public Optional<File> getDepsFile(String path) {
+
+        File file = getFile(path);
+        if(file != null) {
+            return getDepsFile(file);
+        }
+        return Optional.empty();
+    }
+
     public Optional<File> getDepsFile(File file) {
 
         for(File fileIter : file.listFiles())
-            if(ProcessTreeConstant.DEPS_FILE.equals(fileIter.getName()))
+            if(FileConstant.DEPS_FILE.equals(fileIter.getName()))
                 return Optional.ofNullable(fileIter);
         return Optional.empty();
     }
 
-    public List<String> parseFile(File file) throws IOException {
+    public List<String> parseDepsFile(String filePath) throws IOException {
+
+        String depsFilePath = filePath + File.separator + FileConstant.DEPS_FILE;
+        File file = getFile(depsFilePath);
+        if(file != null)
+            return parseDepsFile(file);
+        return new ArrayList<>();
+    }
+
+    public List<String> parseDepsFile(File file) throws IOException {
 
         String line;
         List<String> dependencies = new ArrayList<>();
@@ -68,5 +94,16 @@ public class FileUtils {
             if(!"".equals(line= line.trim()))
                 dependencies.add(line);
         return dependencies;
+    }
+
+    public void clearFolder(String folderPath) {
+
+        File file = getFile(folderPath);
+        if(file != null) {
+            File[] filesInside = file.listFiles();
+            for(File fileInside : filesInside) {
+                fileInside.delete();
+            }
+        }
     }
 }

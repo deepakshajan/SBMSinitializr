@@ -24,6 +24,8 @@ package com.initializr.service.request;
 import com.initializr.constants.BuildTypeConstant;
 import com.initializr.service.request.builder.ExecutionCommandBuilderChainLink;
 import com.initializr.service.request.builder.ExecutionCommandBuilderChain;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import javax.validation.constraints.NotNull;
 
@@ -31,6 +33,8 @@ import javax.validation.constraints.NotNull;
  * Implementation for {@link StartProcessServiceRequest}. This is the request object accepted by the {@link com.initializr.service.StartProcessService} rest service.
  * @author Deepak Shajan
  */
+@Component
+@Scope(value = "singleton")
 public class StartProcessServiceRequestImpl implements StartProcessServiceRequest {
 
 
@@ -139,6 +143,16 @@ public class StartProcessServiceRequestImpl implements StartProcessServiceReques
     @Override
     public boolean isRunBoot() {
         return runBoot;
+    }
+
+    @Override
+    public void setModuleName(String moduleName) {
+        this.moduleName = moduleName;
+    }
+
+    @Override
+    public void setPath(String path) {
+        this.path = path;
     }
 
     public void setBuildType(String buildType) {

@@ -32,6 +32,7 @@ import java.util.Map;
 
 /**
  * Provides various functions to operate on the {@link ProcessPoolProvider#pool} object.
+ * <p><b>Note : All public methods in this class should be strictly thread safe.</b></p>
  * @author Deepak Shajan
  */
 @Component
@@ -43,7 +44,7 @@ public class ProcessPoolOperations {
      * <p>Adding the process to the process pool does not mean that the process is complete. It simply means that the process start procedure has been initiated.</p>
      * @param processThread : The {@link ProcessThread} instance in which the process is booting up.
      */
-    public void addProcessToPool(ProcessThread processThread) {
+    public synchronized void addProcessToPool(ProcessThread processThread) {
 
         ProcessPoolProvider processPoolProvider = ProcessPoolProvider.getProcessPoolProvider();
         processPoolProvider.addProcessToPool(processThread);
@@ -55,7 +56,7 @@ public class ProcessPoolOperations {
      * <p>The <code>processIdentifier</code> will be added to the {@link ProcessPoolProvider#completedProcessIds}</p>
      * @param processThread The {@link ProcessThread} instance in which the process is booting up.
      */
-    public void markProcessAsCompleted(ProcessThread processThread) {
+    public synchronized void markProcessAsCompleted(ProcessThread processThread) {
 
         markProcessAsCompleted(processThread.getProcessIdentifier());
     }
@@ -66,7 +67,7 @@ public class ProcessPoolOperations {
      * <p>The <code>processIdentifier</code> will be added to the {@link ProcessPoolProvider#failedProcessIds}</p>
      * @param processThread The {@link ProcessThread} instance in which the process is booting up.
      */
-    public void markProcessAsFailed(ProcessThread processThread) {
+    public synchronized void markProcessAsFailed(ProcessThread processThread) {
 
         markProcessAsFailed(processThread.getProcessIdentifier());
     }
@@ -77,7 +78,7 @@ public class ProcessPoolOperations {
      * <p>The <code>processIdentifier</code> will be added to the {@link ProcessPoolProvider#completedProcessIds}</p>
      * @param processIdentifier The module name of the process to be marked. Should be unique for each process.
      */
-    public void markProcessAsCompleted(String processIdentifier) {
+    public synchronized void markProcessAsCompleted(String processIdentifier) {
 
         ProcessPoolProvider processPoolProvider = ProcessPoolProvider.getProcessPoolProvider();
         processPoolProvider.markProcessAsCompleted(processIdentifier);
@@ -89,7 +90,7 @@ public class ProcessPoolOperations {
      * <p>The <code>processIdentifier</code> will be added to the {@link ProcessPoolProvider#failedProcessIds}</p>
      * @param processIdentifier The module name of the process to be marked. Should be unique for each process.
      */
-    public void markProcessAsFailed(String processIdentifier) {
+    public synchronized void markProcessAsFailed(String processIdentifier) {
 
         ProcessPoolProvider processPoolProvider = ProcessPoolProvider.getProcessPoolProvider();
         processPoolProvider.markProcessAsFailed(processIdentifier);
@@ -100,7 +101,7 @@ public class ProcessPoolOperations {
      * @param processThread The {@link ProcessThread} instance in which the process is booting up.
      * @return true if removed, else returns false.
      */
-    public boolean removeProcessFromPool(ProcessThread processThread) {
+    public synchronized boolean removeProcessFromPool(ProcessThread processThread) {
 
         ProcessPoolProvider pool = ProcessPoolProvider.getProcessPoolProvider();
         return pool.removeProcessFromPool(processThread.getProcessIdentifier());
@@ -111,7 +112,7 @@ public class ProcessPoolOperations {
      * <p>This method makes sure that the underlying operating system process is killed</p>
      * @param processThread The {@link ProcessThread} instance in which the process was booting up.
      */
-    public void forceStopProcess(ProcessThread processThread) {
+    public synchronized void forceStopProcess(ProcessThread processThread) {
 
         forceStopProcess(processThread.getProcessIdentifier());
     }
@@ -124,7 +125,7 @@ public class ProcessPoolOperations {
      * @param processIdentifier The module name of the process to be marked. Should be unique for each process.
      * @return true if stop is successful.
      */
-    public boolean forceStopProcess(String processIdentifier) {
+    public synchronized boolean forceStopProcess(String processIdentifier) {
 
         ProcessThreadOperations processThreadOperations = new ProcessThreadOperations();
         ProcessPoolProvider processPoolProvider = ProcessPoolProvider.getProcessPoolProvider();
@@ -141,7 +142,7 @@ public class ProcessPoolOperations {
      *
      * <p>After execution of this method the {@link ProcessPoolProvider#pool} and {@link ProcessPoolProvider#completedProcessIds} variable should be empty.</p>
      */
-    public void forceStopAllProcess() {
+    public synchronized void forceStopAllProcess() {
 
         ProcessPoolProvider processPoolProvider = ProcessPoolProvider.getProcessPoolProvider();
         Map<String, Process> processPool = processPoolProvider.getPool();
@@ -157,7 +158,7 @@ public class ProcessPoolOperations {
      * @param processIdentifier The unique identifier for the process.
      * @return true if the process is either started or is starting.Else returns false.
      */
-    public boolean isProcessRunning(@NotNull String processIdentifier) {
+    public synchronized boolean isProcessRunning(@NotNull String processIdentifier) {
 
         ProcessPoolProvider processPoolProvider = ProcessPoolProvider.getProcessPoolProvider();
         Map<String, Process> pool = processPoolProvider.getPool();
@@ -171,7 +172,7 @@ public class ProcessPoolOperations {
      * @param processIdentifier The unique identifier for the process.
      * @return true if the process has started successfully,else returns false.
      */
-    public boolean isProcessStarted(String processIdentifier) {
+    public synchronized boolean isProcessStarted(String processIdentifier) {
 
         ProcessPoolProvider processPoolProvider = ProcessPoolProvider.getProcessPoolProvider();
         boolean isStarted = processPoolProvider.isProcessStarted(processIdentifier);
@@ -183,7 +184,7 @@ public class ProcessPoolOperations {
      * @param processIdentifier The unique identifier for the process.
      * @return true if the process has failed,else returns false.
      */
-    public boolean isProcessFailed(String processIdentifier) {
+    public synchronized boolean isProcessFailed(String processIdentifier) {
 
         ProcessPoolProvider processPoolProvider = ProcessPoolProvider.getProcessPoolProvider();
         boolean isFailed = processPoolProvider.isProcessFailed(processIdentifier);
@@ -194,7 +195,7 @@ public class ProcessPoolOperations {
      * Get the size of the {@link ProcessPoolProvider#pool}.
      * @return
      */
-    public int getCurrentProcessPoolSize() {
+    public synchronized int getCurrentProcessPoolSize() {
         return ProcessPoolProvider.getProcessPoolProvider().getPool().size();
     }
 

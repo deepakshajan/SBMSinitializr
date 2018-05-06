@@ -20,11 +20,13 @@
 
 package com.initializr.constants;
 
+import com.initializr.backbone.SBMSConstant;
+
 /**
  * All constants related to logging is held here.
  * @author Deepak Shajan
  */
-public final class LogConstant implements Constant{
+public final class LogConstant implements SBMSConstant {
 
     /**
      * The name of the folder into which the logs of each microservice is written into.

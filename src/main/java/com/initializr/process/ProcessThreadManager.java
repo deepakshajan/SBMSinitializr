@@ -20,6 +20,7 @@
 
 package com.initializr.process;
 
+import com.initializr.process.thread.MonitorThread;
 import com.initializr.process.thread.ProcessThread;
 import com.initializr.service.request.StartProcessServiceRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,17 +39,24 @@ public final class ProcessThreadManager {
     @Autowired
     private ThreadPoolTaskExecutor processTaskExecutor;
 
+    @Autowired
+    private ThreadPoolTaskExecutor monitorTaskExecutor;
+
     private ProcessThread processThread = null;
 
+    private MonitorThread monitorThread = null;
+
     /**
-     * Initiates a new {@link Thread} which in our case is the {@link ProcessThread}.
-     * @param request the caller request which contains all the info regarding the microservice.Refer {@link StartProcessServiceRequest}.
+     * Initiates two new {@link Thread}s which in our case is the {@link ProcessThread} and {@link MonitorThread}.
+     * @param request the caller request which contains all the info regarding the microservice. Refer {@link StartProcessServiceRequest}.
      * @return <code>true</code>
      */
     public boolean startProcess(StartProcessServiceRequest request) {
 
         this.processThread = new ProcessThread(request);
+        this.monitorThread = new MonitorThread(request);
         processTaskExecutor.submit(processThread);
+        monitorTaskExecutor.submit(monitorThread);
         return true;
     }
 

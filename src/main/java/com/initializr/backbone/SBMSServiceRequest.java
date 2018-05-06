@@ -18,13 +18,31 @@
  SOFTWARE.
  */
 
-package com.initializr.exception;
+package com.initializr.backbone;
 
-import com.initializr.backbone.SBMSServiceRequest;
+import com.initializr.exception.InvalidServiceRequestException;
+
+import java.io.Serializable;
 
 /**
- * This runtime exception is intended to be thrown when the caller attempts to invoke a {@link com.initializr.service.Service} using an invalid {@link SBMSServiceRequest}
+ * Interface to be extended by all requests incoming to any service in the application.
  * @author Deepak Shajan
  */
-public class InvalidServiceRequestException extends RuntimeException {
+public interface SBMSServiceRequest extends Serializable{
+
+
+    /**
+     * Default method throws {@link InvalidServiceRequestException} if the {@link SBMSServiceRequest#filterInvalidRequest()} returns true.
+     */
+    default void filter(){
+        if(filterInvalidRequest())
+            throw new InvalidServiceRequestException();
+    }
+
+    /**
+     * Implementations should provide the logic for all invalid requests that the rest services must decline.
+     *
+     * <p>This method enables the {@link SBMSServiceRequest} implementations to filter out any unwanted invocations.</p>
+     */
+    boolean filterInvalidRequest();
 }

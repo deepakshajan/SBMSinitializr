@@ -21,13 +21,15 @@
 package com.initializr.service.request;
 
 
+import com.initializr.backbone.SBMSServiceRequest;
+
 /**
  * Interface representing the request to be triggered by the service invoker inorder to start a process.
  *
  * <p>Implementations of this interface contains info about the microservice to be started.</p>
  * @author Deepak Shajan
  */
-public interface StartProcessServiceRequest extends ServiceRequest{
+public interface StartProcessServiceRequest extends SBMSServiceRequest {
 
     /**
      * Unique identifier for each microservice.
@@ -76,5 +78,17 @@ public interface StartProcessServiceRequest extends ServiceRequest{
      * @return boolean
      */
     boolean isRunBoot();
+
+    void setModuleName(String moduleName);
+
+    void setPath(String path);
+
+    void setBuildType(String buildType);
+
+    void setRunClean(boolean runClean);
+
+    void setRunTests(boolean runTest);
+
+    void setRunBoot(boolean runBoot);
 
 }

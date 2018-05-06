@@ -20,12 +20,13 @@
 
 package com.initializr.constants;
 
+import com.initializr.backbone.SBMSConstant;
+
 /**
  * @author Deepak Shajan
  */
-public class ProcessTreeConstant implements Constant {
+public class ProcessTreeConstant implements SBMSConstant {
 
     public static final String ROOT = "root";
 
-    public static final String DEPS_FILE = "deps.txt";
 }

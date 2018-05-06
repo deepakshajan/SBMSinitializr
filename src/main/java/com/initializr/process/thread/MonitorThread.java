@@ -20,20 +20,22 @@
 
 package com.initializr.process.thread;
 
+import com.initializr.backbone.SBMSThread;
 import com.initializr.config.Configuration;
 import com.initializr.constants.LogConstant;
 import com.initializr.process.operations.ProcessPoolOperations;
 import com.initializr.process.pool.ProcessPoolProvider;
 import com.initializr.process.thread.completion.EvaluatorRequest;
 import com.initializr.process.thread.completion.MonitorThreadCompletionConditionEvaluator;
-import com.initializr.service.request.ServiceRequest;
+import com.initializr.process.thread.lock.SmartProcessThreadLock;
+import com.initializr.backbone.SBMSServiceRequest;
 import com.initializr.service.request.StartProcessServiceRequest;
+import com.initializr.utils.ThreadUtils;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.concurrent.Callable;
 
 /**
  * Thread responsible for monitoring the status of the process.
@@ -44,7 +46,7 @@ import java.util.concurrent.Callable;
  * of operation is done for performance reasons.</p>
  * @author Deepak Shajan
  */
-public final class MonitorThread implements Callable<Void> {
+public final class MonitorThread implements SBMSThread<Void> {
 
     /**
      * The request sent by the caller on the service {@link com.initializr.service.StartProcessService}.
@@ -55,7 +57,7 @@ public final class MonitorThread implements Callable<Void> {
     /**
      * @param request request sent by the caller
      */
-    public MonitorThread(ServiceRequest request) {
+    public MonitorThread(SBMSServiceRequest request) {
         this.request = (StartProcessServiceRequest) request;
     }
 
@@ -88,7 +90,7 @@ public final class MonitorThread implements Callable<Void> {
      * @throws InterruptedException because we call sleep on this thread
      */
     private void sleepThreadForSomeTime() throws InterruptedException {
-        Thread.sleep(Configuration.getConfiguration().getMonitorThreadWaitInterval());
+        new ThreadUtils().sleep(Configuration.getConfiguration().getMonitorThreadWaitInterval());
     }
 
     /**
@@ -130,10 +132,14 @@ public final class MonitorThread implements Callable<Void> {
     private boolean readLogAndUpdateCompletion(File log) throws IOException {
 
         Boolean completionStatus = checkForCompletionInLog(log);
-        if(null != completionStatus && completionStatus)
+        if(null != completionStatus && completionStatus) {
             new ProcessPoolOperations().markProcessAsCompleted(request.getModuleName());
-        else if(null != completionStatus && !completionStatus)
+            notifyAllSmartProcessThreads();
+        }
+        else if(null != completionStatus && !completionStatus) {
             new ProcessPoolOperations().markProcessAsFailed(request.getModuleName());
+            notifyAllSmartProcessThreads();
+        }
         return completionStatus != null ? true : false;
     }
 
@@ -170,6 +176,12 @@ public final class MonitorThread implements Callable<Void> {
 
         Boolean result = new MonitorThreadCompletionConditionEvaluator().evaluate(evaluatorRequest);
         return result;
+    }
+
+    private void notifyAllSmartProcessThreads() {
+
+        SmartProcessThreadLock smartProcessThreadLock = SmartProcessThreadLock.getLock();
+        new ThreadUtils().notifyAllWithLock(smartProcessThreadLock);
     }
 
 }

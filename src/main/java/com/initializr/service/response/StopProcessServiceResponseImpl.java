@@ -20,6 +20,8 @@
 
 package com.initializr.service.response;
 
+import com.initializr.backbone.ServiceResponse;
+
 /**
  * Response from the service {@link com.initializr.service.StopProcessService} to the caller.
  * @author Deepak Shajan

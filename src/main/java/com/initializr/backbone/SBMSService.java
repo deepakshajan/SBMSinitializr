@@ -18,23 +18,24 @@
  SOFTWARE.
  */
 
-package com.initializr.constants;
+package com.initializr.backbone;
 
 /**
- * Interface that acts as base for all the child constant classes accross the application.
+ * Interface common for all rest services in the project.
  *
- * <p>List of Constant classes :
- * <ul>
- *     <li>{@link BuildTypeConstant}</li>
- *     <li>{@link LogConstant}</li>
- *     <li>{@link ProcessStatusConstant}</li>
- *     <li>{@link TaskConstant}</li>
- * </ul>
- * </p>
+ * <p>Operates on a request to produce a response. Both request and response are generalized.</p>
+ *
  * @author Deepak Shajan
+ * @param <RequestTypeT> : The type of the request which the service consumes.
+ * @param <ResponseTypeT> : The type of the response that the service produce.
  */
-interface Constant {
+public interface SBMSService<RequestTypeT, ResponseTypeT> {
 
+    /**
+     * Endpoint method that is responsible to receive the request.
+     * @param request : The request object
+     * @return response is returned if no exceptions were thrown.
+     * @throws Exception : Any exception being thrown from within any service is intended to be thrown to the caller.
+     */
+    ResponseTypeT execute(RequestTypeT request) throws Exception;
 }
-
-

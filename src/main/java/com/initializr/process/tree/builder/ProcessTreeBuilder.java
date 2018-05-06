@@ -58,7 +58,7 @@ public final class ProcessTreeBuilder {
 
         File depsFile = new FileUtils().getDepsFile(file).orElseGet(()->null);
         if(depsFile != null) {
-            List<String> dependancies = new FileUtils().parseFile(depsFile);
+            List<String> dependancies = new FileUtils().parseDepsFile(depsFile);
             for (String dependancy : dependancies) {
                 processTree.addChildToParent(file.getName(), dependancy);
             }

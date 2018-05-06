@@ -18,24 +18,63 @@
  SOFTWARE.
  */
 
-package com.initializr.service;
+package com.initializr.service.request;
+
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
+import javax.validation.constraints.NotNull;
 
 /**
- * Interface common for all rest services in the project.
- *
- * <p>Operates on a request to produce a response. Both request and response are generalized.</p>
- *
  * @author Deepak Shajan
- * @param <RequestTypeT> : The type of the request which the service consumes.
- * @param <ResponseTypeT> : The type of the response that the service produce.
  */
-interface Service<RequestTypeT, ResponseTypeT> {
+@Component
+@Scope(value = "prototype")
+public class DeployServiceClusterServiceRequestImpl implements DeployServiceClusterServiceRequest {
 
-    /**
-     * Endpoint method that is responsible to receive the request.
-     * @param request : The request object
-     * @return response is returned if no exceptions were thrown.
-     * @throws Exception : Any exception being thrown from within any service is intended to be thrown to the caller.
-     */
-    ResponseTypeT execute(RequestTypeT request) throws Exception;
+    String clusterPath;
+
+    @NotNull
+    String buildType = null;
+
+    boolean runClean = false;
+
+    boolean runTests = false;
+
+    boolean runBoot = false;
+
+    @Override
+    public String getCluserPath() {
+        return clusterPath;
+    }
+
+    @Override
+    public void setClusterPath(String clusterPath) {
+        this.clusterPath = clusterPath;
+    }
+
+    @Override
+    public String getBuildType() {
+        return buildType;
+    }
+
+    @Override
+    public boolean isRunClean() {
+        return runClean;
+    }
+
+    @Override
+    public boolean isRunTests() {
+        return runTests;
+    }
+
+    @Override
+    public boolean isRunBoot() {
+        return runBoot;
+    }
+
+    @Override
+    public boolean filterInvalidRequest() {
+        return false;
+    }
 }

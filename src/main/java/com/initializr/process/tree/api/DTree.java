@@ -20,6 +20,9 @@
 
 package com.initializr.process.tree.api;
 
+import javax.validation.constraints.NotNull;
+import java.util.*;
+
 /**
  * @author Deepak Shajan
  * @param <ContentTypeT>
@@ -43,12 +46,18 @@ public class DTree<ContentTypeT> {
         return root.addChild(optimisedChild);
     }
 
-
     public boolean addChildToParent(ContentTypeT parentValue, ContentTypeT childValue) {
 
         DTreeNode<ContentTypeT> childNode = new DTreeNode<>(childValue);
         DTreeNode<ContentTypeT> parentNode = new DTreeNode<>(parentValue);
         return addChildToParent(parentNode, childNode);
+    }
+
+    public Iterator<ContentTypeT> iterator() {
+
+        Set<ContentTypeT> set = new LinkedHashSet<>();
+        recursivlyAddChildrenToListForIterator(root, set);
+        return set.iterator();
     }
 
     private boolean addChildToParent(DTreeNode parentNode, DTreeNode childNode) {
@@ -57,6 +66,16 @@ public class DTree<ContentTypeT> {
         DTreeNode optimisedChild = getProcessTreeOptimiser().getOptimisedNode(childNode);
         boolean added = optimisedParent.addChild(optimisedChild);
         return added;
+    }
+
+    private void recursivlyAddChildrenToListForIterator(@NotNull DTreeNode<ContentTypeT> dTreeNode, @NotNull Set<ContentTypeT> set) {
+
+        if(null != dTreeNode) {
+            for (DTreeNode<ContentTypeT> node : dTreeNode.getChildren()) {
+                set.add(node.getValue());
+                recursivlyAddChildrenToListForIterator(node, set);
+            }
+        }
     }
 
     public DTreeNode getRoot() {

@@ -18,13 +18,14 @@
  SOFTWARE.
  */
 
-package com.initializr.exception;
+package com.initializr.constants;
 
-import com.initializr.backbone.SBMSServiceRequest;
+import com.initializr.backbone.SBMSConstant;
 
 /**
- * This runtime exception is intended to be thrown when the caller attempts to invoke a {@link com.initializr.service.Service} using an invalid {@link SBMSServiceRequest}
  * @author Deepak Shajan
  */
-public class InvalidServiceRequestException extends RuntimeException {
+public class FileConstant implements SBMSConstant {
+
+    public static final String DEPS_FILE = "deps.txt";
 }
