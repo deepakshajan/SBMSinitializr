@@ -23,7 +23,7 @@ package com.initializr.process;
 import com.initializr.exception.DuplicateProcessException;
 import com.initializr.process.operations.ProcessPoolOperations;
 import com.initializr.service.request.StartProcessServiceRequest;
-import com.initializr.backbone.ServiceResponse;
+import com.initializr.backbone.SBMSServiceResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -44,13 +44,13 @@ public final class ProcessInitializr {
     ProcessPoolOperations processPoolOperations;
 
     /**
-     * Initialize the system process and build the {@link ServiceResponse}.
+     * Initialize the system process and build the {@link SBMSServiceResponse}.
      * @param request the caller request which contains all the info regarding the microservice.Refer {@link StartProcessServiceRequest}.
      * @param response empty response to be sent to the caller.Refer {@link com.initializr.service.response.StartProcessServiceResponseImpl}
      * @return enriched response to be sent to the caller.Refer {@link com.initializr.service.response.StartProcessServiceResponseImpl}
      * @throws DuplicateProcessException when a process with the same module name already exists in the {@link com.initializr.process.pool.ProcessPoolProvider#pool}.
      */
-    public ServiceResponse initializeProcess(StartProcessServiceRequest request, ServiceResponse response) {
+    public SBMSServiceResponse initializeProcess(StartProcessServiceRequest request, SBMSServiceResponse response) {
 
         if(processPoolOperations.isProcessRunning(request.getModuleName())) {
             throw new DuplicateProcessException();
@@ -67,7 +67,7 @@ public final class ProcessInitializr {
      * @param processStarted whether the process start has been started.
      * @return enriched response to be sent to the caller. Refer {@link com.initializr.service.response.StartProcessServiceResponseImpl}
      */
-    private ServiceResponse setExecutionCompleteToResponse(ServiceResponse response, boolean processStarted) {
+    private SBMSServiceResponse setExecutionCompleteToResponse(SBMSServiceResponse response, boolean processStarted) {
 
         response.setSuccess(processStarted);
         return response;

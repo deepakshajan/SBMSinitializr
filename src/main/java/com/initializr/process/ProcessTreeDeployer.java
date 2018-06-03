@@ -65,7 +65,7 @@ public class ProcessTreeDeployer {
             StartProcessServiceRequest startProcessServiceRequest = deployServiceClusterServiceRequestAdapter.convertToStartProcessServiceRequestImpl(request, moduleName);
             SmartProcessThread cloneSmartProcessThread = smartProcessThread.clone();
             cloneSmartProcessThread.setRequestToThread(startProcessServiceRequest);
-            smartProcessTaskExecutor.submit(cloneSmartProcessThread);
+            threadUtils.startThread(smartProcessTaskExecutor, cloneSmartProcessThread);
             threadUtils.sleep(Configuration.getConfiguration().getProcessStartTimeGap());
         }
     }

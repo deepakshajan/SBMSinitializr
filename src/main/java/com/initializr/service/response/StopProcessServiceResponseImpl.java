@@ -20,13 +20,13 @@
 
 package com.initializr.service.response;
 
-import com.initializr.backbone.ServiceResponse;
+import com.initializr.backbone.SBMSServiceResponse;
 
 /**
  * Response from the service {@link com.initializr.service.StopProcessService} to the caller.
  * @author Deepak Shajan
  */
-public final class StopProcessServiceResponseImpl implements ServiceResponse {
+public final class StopProcessServiceResponseImpl implements SBMSServiceResponse {
 
     /**
      * Contains info regarding the status of the service execution.

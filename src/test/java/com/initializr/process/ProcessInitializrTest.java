@@ -24,7 +24,7 @@ import com.initializr.exception.DuplicateProcessException;
 import com.initializr.process.operations.ProcessPoolOperations;
 import com.initializr.process.thread.ProcessThread;
 import com.initializr.service.request.StartProcessServiceRequest;
-import com.initializr.backbone.ServiceResponse;
+import com.initializr.backbone.SBMSServiceResponse;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -56,7 +56,7 @@ public class ProcessInitializrTest {
     StartProcessServiceRequest request;
 
     @Mock
-    ServiceResponse response;
+    SBMSServiceResponse response;
 
     @Before
     public void setUp() {

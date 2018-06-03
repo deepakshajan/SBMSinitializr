@@ -18,28 +18,44 @@
  SOFTWARE.
  */
 
-package com.initializr.service.response;
+package com.initializr.process.thread.cache;
 
-import com.initializr.backbone.SBMSServiceResponse;
+import com.initializr.backbone.SBMSCache;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.Future;
 
 /**
- * Response from the service {@link com.initializr.service.StartProcessService} to the caller.
  * @author Deepak Shajan
  */
-public final class StartProcessServiceResponseImpl implements SBMSServiceResponse {
+public enum ThreadCache implements SBMSCache {
 
-    /**
-     * Contains info regarding the status of the service execution.
-     */
-    boolean success = false;
+    INSTANCE;
 
-    @Override
-    public boolean isSuccess() {
-        return success;
+    private List<Future> threadCache = Collections.synchronizedList(new LinkedList<>());
+
+    public static ThreadCache getInstance() {
+        return INSTANCE;
     }
 
-    @Override
-    public void setSuccess(boolean success) {
-        this.success = success;
+    public List<Future> getAllThreads() {
+        return INSTANCE.threadCache;
     }
+
+    public boolean addThreadToCache(Future thread) {
+        return INSTANCE.threadCache.add(thread);
+    }
+
+    public boolean removeThreadFromCache(Future thread) {
+        return INSTANCE.threadCache.remove(thread);
+    }
+
+    public void clearCache() {
+        INSTANCE.threadCache.clear();
+    }
+
 }

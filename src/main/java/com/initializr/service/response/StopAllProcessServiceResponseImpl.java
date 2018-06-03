@@ -18,26 +18,24 @@
  SOFTWARE.
  */
 
-package com.initializr.backbone;
+package com.initializr.service.response;
 
-import java.io.Serializable;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
-/**
- * Interface to be implemented by every response outgoing to the caller.
- * @author Deepak Shajan
- */
-public interface ServiceResponse extends Serializable {
+@Component
+@Scope(value = "prototype")
+public class StopAllProcessServiceResponseImpl implements StopAllProcessServiceResponse {
 
-    /**
-     * @return Implementations should implement this such a way that it returns {@code true} in case the {@link com.initializr.service.Service}
-     * successfully completed its intended purpose. In case of errors should return {@code false}.
-     */
-    boolean isSuccess();
+    private boolean success;
 
-    /**
-     * Set the success status of the response
-     * @param success success status of the response
-     */
-    void setSuccess(boolean success);
+    @Override
+    public boolean isSuccess() {
+        return this.success;
+    }
 
+    @Override
+    public void setSuccess(boolean success) {
+        this.success = success;
+    }
 }

@@ -24,8 +24,9 @@ import com.initializr.backbone.SBMSService;
 import com.initializr.process.ProcessInitializr;
 import com.initializr.process.thread.MonitorThread;
 import com.initializr.service.request.StartProcessServiceRequestImpl;
-import com.initializr.backbone.ServiceResponse;
+import com.initializr.backbone.SBMSServiceResponse;
 import com.initializr.service.response.StartProcessServiceResponseImpl;
+import com.initializr.utils.ThreadUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
@@ -54,6 +55,9 @@ public final class StartProcessService implements SBMSService<StartProcessServic
     @Autowired
     private ThreadPoolTaskExecutor monitorTaskExecutor;
 
+    @Autowired
+    private ThreadUtils threadUtils;
+
 
     /**
      *  Starts and monitors a new system process
@@ -69,7 +73,7 @@ public final class StartProcessService implements SBMSService<StartProcessServic
     @RequestMapping(value = "/startProcess", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public StartProcessServiceResponseImpl execute(@RequestBody StartProcessServiceRequestImpl request) throws Exception {
 
-        ServiceResponse response = null;
+        SBMSServiceResponse response = null;
         response = new StartProcessServiceResponseImpl();
         try {
 
@@ -92,7 +96,7 @@ public final class StartProcessService implements SBMSService<StartProcessServic
      * @param response : success status of the response is set to <code>false</code>.
      * @throws Exception any exception thrown from within is thrown back to the caller
      */
-    private void handleException(Exception e, ServiceResponse response) throws Exception {
+    private void handleException(Exception e, SBMSServiceResponse response) throws Exception {
 
         response.setSuccess(false);
         throw e;
@@ -105,7 +109,8 @@ public final class StartProcessService implements SBMSService<StartProcessServic
     private void startProcessMonitorThread(StartProcessServiceRequestImpl request) {
 
         MonitorThread monitorThread = new MonitorThread(request);
-        monitorTaskExecutor.submit(monitorThread);
+        threadUtils.startThread(monitorTaskExecutor, monitorThread);
+
     }
 
 }

@@ -20,12 +20,12 @@
 
 package com.initializr.service.response;
 
-import com.initializr.backbone.ServiceResponse;
+import com.initializr.backbone.SBMSServiceResponse;
 
 /**
  * @author Deepak Shajan
  */
-public class DeployServiceClusterServiceResponseImpl implements ServiceResponse {
+public class DeployServiceClusterServiceResponseImpl implements SBMSServiceResponse {
 
     private boolean success = false;
 

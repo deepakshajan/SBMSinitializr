@@ -18,28 +18,26 @@
  SOFTWARE.
  */
 
-package com.initializr.service.response;
+package com.initializr.backbone;
 
-import com.initializr.backbone.SBMSServiceResponse;
+import java.io.Serializable;
 
 /**
- * Response from the service {@link com.initializr.service.StartProcessService} to the caller.
+ * Interface to be implemented by every response outgoing to the caller.
  * @author Deepak Shajan
  */
-public final class StartProcessServiceResponseImpl implements SBMSServiceResponse {
+public interface SBMSServiceResponse extends Serializable {
 
     /**
-     * Contains info regarding the status of the service execution.
+     * @return Implementations should implement this such a way that it returns {@code true} in case the {@link com.initializr.service.Service}
+     * successfully completed its intended purpose. In case of errors should return {@code false}.
      */
-    boolean success = false;
+    boolean isSuccess();
 
-    @Override
-    public boolean isSuccess() {
-        return success;
-    }
+    /**
+     * Set the success status of the response
+     * @param success success status of the response
+     */
+    void setSuccess(boolean success);
 
-    @Override
-    public void setSuccess(boolean success) {
-        this.success = success;
-    }
 }

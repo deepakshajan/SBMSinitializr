@@ -23,6 +23,7 @@ package com.initializr.process;
 import com.initializr.process.thread.MonitorThread;
 import com.initializr.process.thread.ProcessThread;
 import com.initializr.service.request.StartProcessServiceRequest;
+import com.initializr.utils.ThreadUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
@@ -42,6 +43,9 @@ public final class ProcessThreadManager {
     @Autowired
     private ThreadPoolTaskExecutor monitorTaskExecutor;
 
+    @Autowired
+    private ThreadUtils threadUtils;
+
     private ProcessThread processThread = null;
 
     private MonitorThread monitorThread = null;
@@ -55,8 +59,8 @@ public final class ProcessThreadManager {
 
         this.processThread = new ProcessThread(request);
         this.monitorThread = new MonitorThread(request);
-        processTaskExecutor.submit(processThread);
-        monitorTaskExecutor.submit(monitorThread);
+        threadUtils.startThread(processTaskExecutor, processThread);
+        threadUtils.startThread(monitorTaskExecutor, monitorThread);
         return true;
     }
 

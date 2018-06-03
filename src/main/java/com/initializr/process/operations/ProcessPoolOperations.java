@@ -24,6 +24,8 @@ package com.initializr.process.operations;
 import com.initializr.exception.ProcessNotFoundInPoolException;
 import com.initializr.process.pool.ProcessPoolProvider;
 import com.initializr.process.thread.ProcessThread;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.validation.constraints.NotNull;
@@ -38,6 +40,7 @@ import java.util.Map;
 @Component
 public class ProcessPoolOperations {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProcessPoolOperations.class);
 
     /**
      * Add a process to the processPool.
@@ -134,7 +137,9 @@ public class ProcessPoolOperations {
             throw new ProcessNotFoundInPoolException();
         process.destroyForcibly();
         processThreadOperations.destroyProcessForcibily(process);
-        return processPoolProvider.removeProcessFromPool(processIdentifier);
+        boolean hasStopped = processPoolProvider.removeProcessFromPool(processIdentifier);
+        LOGGER.info("***** Stopped process "+ processIdentifier +" *****");
+        return hasStopped;
     }
 
     /**

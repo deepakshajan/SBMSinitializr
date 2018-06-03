@@ -18,28 +18,15 @@
  SOFTWARE.
  */
 
-package com.initializr.service.response;
-
-import com.initializr.backbone.SBMSServiceResponse;
+package com.initializr.service.request;
 
 /**
- * Response from the service {@link com.initializr.service.StartProcessService} to the caller.
  * @author Deepak Shajan
  */
-public final class StartProcessServiceResponseImpl implements SBMSServiceResponse {
-
-    /**
-     * Contains info regarding the status of the service execution.
-     */
-    boolean success = false;
+public class StopAllProcessServiceRequestImpl implements StopAllProcessServiceRequest {
 
     @Override
-    public boolean isSuccess() {
-        return success;
-    }
-
-    @Override
-    public void setSuccess(boolean success) {
-        this.success = success;
+    public boolean filterInvalidRequest() {
+        return false;
     }
 }

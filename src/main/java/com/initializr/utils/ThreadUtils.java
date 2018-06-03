@@ -22,10 +22,16 @@ package com.initializr.utils;
 
 import com.initializr.backbone.SBMSLock;
 import com.initializr.backbone.SBMSUtils;
+import com.initializr.process.thread.cache.ThreadCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
+
+import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
 
 /**
  * @author Deepak Shajan
@@ -61,5 +67,28 @@ public class ThreadUtils implements SBMSUtils {
         synchronized (lock) {
             lock.notifyAll();
         }
+    }
+
+    public boolean startThread(ThreadPoolTaskExecutor executor, Callable thread) {
+
+        Future future = executor.submit(thread);
+        return ThreadCache.getInstance().addThreadToCache(future);
+    }
+
+    private void stopThread(Future thread) {
+
+        thread.cancel(true);
+        ThreadCache.getInstance().removeThreadFromCache(thread);
+    }
+
+    public synchronized void shutdownAllThreads () {
+
+        ThreadCache.getInstance().getAllThreads().forEach(this::stopThreadWithoutClearingCache);
+        ThreadCache.getInstance().clearCache();
+    }
+
+    private void stopThreadWithoutClearingCache(Future thread) {
+
+        thread.cancel(true);
     }
 }

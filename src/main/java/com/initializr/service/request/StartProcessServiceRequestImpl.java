@@ -34,7 +34,7 @@ import javax.validation.constraints.NotNull;
  * @author Deepak Shajan
  */
 @Component
-@Scope(value = "singleton")
+@Scope(value = "prototype")
 public class StartProcessServiceRequestImpl implements StartProcessServiceRequest {
 
 
