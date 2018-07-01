@@ -1,5 +1,5 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import ProgressBar from './ProgressBar.jsx';
+import React from "react";
+import ReactDOM from "react-dom";
+import LandingPage from "./LandingPage.jsx";
 
-ReactDOM.render(<ProgressBar />, document.getElementById('progress'));
+ReactDOM.render(<LandingPage />, document.getElementById('sbms-main-container'));
