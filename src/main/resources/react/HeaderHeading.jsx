@@ -8,11 +8,14 @@ class HeaderHeading extends React.Component {
     }
 
     render() {
-        var contentStyle={position: 'absolute',top: 0,bottom: 0,left: 0,right: 0,width: '50%',height: '30%',margin: 'auto'};
+        var tableStyle = {display: 'table', height: 'inherit', width: '100%'};
+        var contentStyle={display: 'table-cell', verticalAlign: 'middle', textAlign: 'center'};
 
         return(
             <div className='header-heading-container' style={this.props.style}>
-                <div className='header-heading-content' style={contentStyle}>{this.props.heading}</div>
+                <div className='header-heading-table' style={tableStyle}>
+                    <div className='header-heading-content' style={contentStyle}>{this.props.heading}</div>
+                </div>
             </div>
         );
     }
