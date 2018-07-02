@@ -1,6 +1,7 @@
 import React from "react";
 import HeaderInfo from "./HeaderInfo.jsx";
 import HeaderHeading from "./HeaderHeading.jsx";
+import PropTypes from "prop-types";
 
 class Header extends React.Component {
 
@@ -20,5 +21,10 @@ class Header extends React.Component {
         );
     }
 }
+
+Header.propTypes = {
+    style: PropTypes.object
+}
+
 
 export default Header;

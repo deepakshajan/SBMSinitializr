@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 class HeaderInfo extends React.Component {
 
@@ -14,5 +15,7 @@ class HeaderInfo extends React.Component {
         );
     }
 }
+
+HeaderInfo.propTypes = {style: PropTypes.object};
 
 export default HeaderInfo;
