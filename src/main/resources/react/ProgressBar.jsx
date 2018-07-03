@@ -9,10 +9,9 @@ class ProgressBar extends React.Component {
 
 
     render() {
-        var pbContainerStyle = {width:'inherit', height:'inherit',position:'relative',borderStyle:'groove',borderColor:'lightgreen'};
+        var pbContainerStyle = {width:'100%', height:'inherit',position:'relative',borderStyle:'groove',borderColor:'lightgreen'};
         var pbValueStyle = {display:'inline-block',height:'inherit',position:'absolute',textAlign:'center',left:'50%'};
-        var pbCompletedStyle = {width:this.props.value+'%',height:'inherit',backgroundColor:'lightgreen',display:'inline-block',
-                                color:'black',fontWeight:'bolder',};
+        var pbCompletedStyle = {width:this.props.value+'%',height:'inherit',backgroundColor:'lightgreen',display:'inline-block'};
         var pbRemainingStyle = {width:(100-this.props.value)+'%',height:'inherit',backgroundColor:'white',display:'inline-block'};
 
         return(

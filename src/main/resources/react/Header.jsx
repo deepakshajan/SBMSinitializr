@@ -3,6 +3,7 @@ import HeaderInfo from "./HeaderInfo.jsx";
 import HeaderHeading from "./HeaderHeading.jsx";
 import PropTypes from "prop-types";
 
+
 class Header extends React.Component {
 
     constructor(props) {
@@ -10,8 +11,8 @@ class Header extends React.Component {
     }
 
     render() {
-        var headerInfoStyle = {display:'inline-block',height:'inherit',width:'85%'};
-        var headerHeadingStyle = {display:'inline-block',fontcolor:'green',height:'inherit',fontWeight:'bolder',color:'white',position:'relative',width:'15%'};
+        var headerInfoStyle = {display:'inline-block',height:'inherit',width:'80%'};
+        var headerHeadingStyle = {display:'inline-block',fontcolor:'green',height:'inherit',fontWeight:'bolder',color:'white',position:'relative',width:'20%'};
 
         return(
             <div className='header-container' style={this.props.style}>
