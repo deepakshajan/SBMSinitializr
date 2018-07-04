@@ -4,6 +4,7 @@ class ExpandMainSection extends React.Component {
 
     constructor(props) {
         super(props);
+
     }
 
     render() {
@@ -13,12 +14,14 @@ class ExpandMainSection extends React.Component {
 
         return(<div className='expand-main-section-container' style={this.props.style}>
             <div className='expand-main-section-inner-container' style={innerContainerStyle}>
-                <button className='icon-button' style={buttonStyle} title='Focus Mode'>
+                <button className='icon-button' onClick={this.props.action} style={buttonStyle} title='Toggle Focus Mode'>
                     <i className="fas fa-expand" style={iconStyle}></i>
                 </button>
             </div>
         </div>);
     }
+
 }
+
 
 export default ExpandMainSection;

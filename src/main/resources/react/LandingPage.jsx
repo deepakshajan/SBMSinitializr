@@ -11,10 +11,12 @@ class LandingPage extends React.Component {
     constructor() {
         super();
 
+        this.toggleExpandState = this.toggleExpandState.bind(this);
+
         this.state = {
-            header:{heading:'SBMSInitializr'},
-            progressBar:{value:56},
-            folderSelector:{placeHolder:'Path to the micro service cluster(eg : D:\\code\\serviceCluster)'}
+            header: {heading: 'SBMSInitializr'},
+            progressBar: {value: 56},
+            expandMainSection: {expand: false, action: this.toggleExpandState}
         };
     }
 
@@ -28,18 +30,25 @@ class LandingPage extends React.Component {
         var lineDivStyle1 = {};
         var lineDivStyle2 = {};
 
+        var isDisplayed = !this.state.expandMainSection.expand;
         return(<div className='landing-page-container'>
-            <Header heading={this.state.header.heading} style={headerStyle} />
-            <div className='lp-line-div-container' style={lineDivStyle1}>
-                <FolderSelector placeHolder={this.state.folderSelector.placeHolder} style={folderSelectorStyle} />
+            {isDisplayed && <Header heading={this.state.header.heading} style={headerStyle} />}
+            {isDisplayed && <div className='lp-line-div-container' style={lineDivStyle1}>
+                <FolderSelector style={folderSelectorStyle} />
                 <Actions style={actionsStyle} />
-            </div>
+            </div>}
             <div className='lp-line-div-container' style={lineDivStyle2}>
                 <ProgressBar value={this.state.progressBar.value} style={progressBarStyle} />
-                <ExpandMainSection style={expandMainSectionStyle} />
+                <ExpandMainSection expand={this.state.expandMainSection.expand} style={expandMainSectionStyle} action={this.state.expandMainSection.action}/>
             </div>
             <MainSection style={mainSectionStyle} />
         </div>);
+    }
+
+    toggleExpandState() {
+        var newState = this.state;
+        newState.expandMainSection.expand = !newState.expandMainSection.expand;
+        this.setState(newState);
     }
 }
 

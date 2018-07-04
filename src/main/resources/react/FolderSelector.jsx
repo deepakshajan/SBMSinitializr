@@ -30,7 +30,7 @@ class FolderSelector extends React.Component {
                         <label htmlFor='folder-selector-input' style={labelStyle}>Directory : </label>
                     </div>
                     <div style={inputDivStyle}>
-                        <input name='folder-selector-input' type='text' value={this.state.value} onChange={this.validate} placeholder={this.props.placeHolder} style={inputStyle}></input>
+                        <input name='folder-selector-input' type='text' value={this.state.value} onChange={this.validate} placeholder='Path to the micro service cluster(eg : D:\code\serviceCluster)' style={inputStyle}></input>
                     </div>
                 </div>
                 <div className='folder-selector-validation-status' style={validationDivStyle}>
@@ -70,9 +70,5 @@ class FolderSelector extends React.Component {
         }
     }
 }
-
-FolderSelector.defaultProps = {placeHolder:'Path to the micro service cluster(eg : D:\\code\\serviceCluster)'};
-
-FolderSelector.propTypes = {placeHolder:PropTypes.string};
 
 export default FolderSelector;
