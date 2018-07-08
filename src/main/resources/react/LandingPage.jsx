@@ -5,6 +5,7 @@ import FolderSelector from "./FolderSelector.jsx";
 import Actions from "./Actions.jsx";
 import MainSection from "./MainSection.jsx";
 import ExpandMainSection from "./ExpandMainSection.jsx";
+import SbmsWebSocket from "./SbmsWebSocket.jsx";
 
 class LandingPage extends React.Component {
 
@@ -39,9 +40,10 @@ class LandingPage extends React.Component {
             </div>}
             <div className='lp-line-div-container' style={lineDivStyle2}>
                 <ProgressBar value={this.state.progressBar.value} style={progressBarStyle} />
-                <ExpandMainSection expand={this.state.expandMainSection.expand} style={expandMainSectionStyle} action={this.state.expandMainSection.action}/>
+                <ExpandMainSection expand={this.state.expandMainSection.expand} style={expandMainSectionStyle} action={this.state.expandMainSection.action} />
             </div>
             <MainSection style={mainSectionStyle} />
+            <SbmsWebSocket onRecieve={this.onRecieveFromServer}/>
         </div>);
     }
 
@@ -49,6 +51,10 @@ class LandingPage extends React.Component {
         var newState = this.state;
         newState.expandMainSection.expand = !newState.expandMainSection.expand;
         this.setState(newState);
+    }
+
+    onRecieveFromServer() {
+        //TODO update the state accordingly
     }
 }
 

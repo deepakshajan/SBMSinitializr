@@ -17,6 +17,7 @@ class Actions extends React.Component {
                 <StartAllServiceButton style={startAllServiceStyle} />
             </div>
         </div>);
+
     }
 }
 
