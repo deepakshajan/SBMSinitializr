@@ -52,7 +52,7 @@ SbmsWebSocket.callbacksOnRecieve = [];
 
 SbmsWebSocket.init = function () {
     if (!SbmsWebSocket.socket) {
-        SbmsWebSocket.socket = new WebSocket('ws://localhost:18080/webSocket');
+        SbmsWebSocket.socket = new WebSocket('ws://localhost:8080/webSocket');
         SbmsWebSocket.socket.onmessage = SbmsWebSocket.executeAllCallBacksOnRecieve;
     }
     

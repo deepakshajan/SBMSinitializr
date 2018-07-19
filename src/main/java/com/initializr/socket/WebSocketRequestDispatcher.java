@@ -43,7 +43,7 @@ public class WebSocketRequestDispatcher {
 
     public String redirect(SBMSWebSocketRequest webSocketRequest) {
 
-        String fullEndPoint = "http://localhost:18080" + webSocketRequest.getEndPoint();
+        String fullEndPoint = "http://localhost:8080" + webSocketRequest.getEndPoint();
         SBMSServiceRequest serviceRequest = webSocketRequestAdapter.convertToServiceRequest(webSocketRequest);
         String webServiceResponse = restServiceInvoker.invokeRestService(fullEndPoint, serviceRequest);
         return webServiceResponse;
