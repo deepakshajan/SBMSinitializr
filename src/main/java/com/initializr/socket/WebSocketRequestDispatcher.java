@@ -18,25 +18,35 @@
  SOFTWARE.
  */
 
-package com.initializr.service.request;
-
+package com.initializr.socket;
 
 import com.initializr.backbone.SBMSServiceRequest;
+import com.initializr.backbone.SBMSWebSocketRequest;
+import com.initializr.service.invoke.RestServiceInvoker;
+import com.initializr.socket.adapter.WebSocketRequestAdapter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 /**
  * @author Deepak Shajan
  */
-public interface DeployServiceClusterServiceRequest extends SBMSServiceRequest {
+@Component
+@Scope(value = "prototype")
+public class WebSocketRequestDispatcher {
 
-    String getClusterPath();
+    @Autowired
+    private RestServiceInvoker restServiceInvoker;
 
-    void setClusterPath(String clusterPath);
+    @Autowired
+    private WebSocketRequestAdapter webSocketRequestAdapter;
 
-    String getBuildType();
+    public String redirect(SBMSWebSocketRequest webSocketRequest) {
 
-    boolean isRunClean();
+        String fullEndPoint = "http://localhost:18080" + webSocketRequest.getEndPoint();
+        SBMSServiceRequest serviceRequest = webSocketRequestAdapter.convertToServiceRequest(webSocketRequest);
+        String webServiceResponse = restServiceInvoker.invokeRestService(fullEndPoint, serviceRequest);
+        return webServiceResponse;
+    }
 
-    boolean isRunTests();
-
-    boolean isRunBoot();
 }

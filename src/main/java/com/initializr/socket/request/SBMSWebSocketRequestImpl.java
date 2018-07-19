@@ -18,30 +18,37 @@
  SOFTWARE.
  */
 
-package com.initializr.service.request;
+package com.initializr.socket.request;
 
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
+import com.initializr.backbone.SBMSWebSocketRequest;
 
-import javax.validation.constraints.NotNull;
 
 /**
  * @author Deepak Shajan
  */
-@Component
-@Scope(value = "prototype")
-public class DeployServiceClusterServiceRequestImpl implements DeployServiceClusterServiceRequest {
+public class SBMSWebSocketRequestImpl implements SBMSWebSocketRequest {
 
-    String clusterPath = null;
+    private String endPoint;
 
-    @NotNull
-    String buildType = null;
+    private String clusterPath;
 
-    boolean runClean = false;
+    private String buildType;
 
-    boolean runTests = false;
+    private boolean runClean;
 
-    boolean runBoot = false;
+    private boolean runTests;
+
+    private boolean runBoot;
+
+    @Override
+    public String getEndPoint() {
+        return endPoint;
+    }
+
+    @Override
+    public void setEndPoint(String endPoint) {
+        this.endPoint = endPoint;
+    }
 
     @Override
     public String getClusterPath() {
@@ -58,9 +65,18 @@ public class DeployServiceClusterServiceRequestImpl implements DeployServiceClus
         return buildType;
     }
 
+    public void setBuildType(String buildType) {
+        this.buildType = buildType;
+    }
+
     @Override
     public boolean isRunClean() {
         return runClean;
+    }
+
+    @Override
+    public void setRunClean(boolean runClean) {
+        this.runClean = runClean;
     }
 
     @Override
@@ -69,30 +85,17 @@ public class DeployServiceClusterServiceRequestImpl implements DeployServiceClus
     }
 
     @Override
-    public boolean isRunBoot() {
-        return runBoot;
-    }
-
-    public void setBuildType(String buildType) {
-        this.buildType = buildType;
-    }
-
-    public void setRunClean(boolean runClean) {
-        this.runClean = runClean;
-    }
-
     public void setRunTests(boolean runTests) {
         this.runTests = runTests;
     }
 
-    public void setRunBoot(boolean runBoot) {
-        this.runBoot = runBoot;
+    @Override
+    public boolean isRunBoot() {
+        return runBoot;
     }
 
     @Override
-    public boolean filterInvalidRequest() {
-        return false;
+    public void setRunBoot(boolean runBoot) {
+        this.runBoot = runBoot;
     }
-
-
 }

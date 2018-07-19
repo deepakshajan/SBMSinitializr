@@ -18,25 +18,38 @@
  SOFTWARE.
  */
 
-package com.initializr.service.request;
+package com.initializr.backbone;
 
+import java.io.Serializable;
 
-import com.initializr.backbone.SBMSServiceRequest;
 
 /**
  * @author Deepak Shajan
  */
-public interface DeployServiceClusterServiceRequest extends SBMSServiceRequest {
+public interface SBMSWebSocketRequest extends Serializable {
 
-    String getClusterPath();
+    public String getEndPoint();
 
-    void setClusterPath(String clusterPath);
+    public void setEndPoint(String endPoint);
 
-    String getBuildType();
+    public String getClusterPath();
 
-    boolean isRunClean();
+    public void setClusterPath(String clusterPath);
 
-    boolean isRunTests();
+    public String getBuildType();
 
-    boolean isRunBoot();
+    public void setBuildType(String buildType);
+
+    public boolean isRunClean();
+
+    public void setRunClean(boolean runClean);
+
+    public boolean isRunTests();
+
+    public void setRunTests(boolean runTests);
+
+    public boolean isRunBoot();
+
+    public void setRunBoot(boolean runBoot);
+
 }

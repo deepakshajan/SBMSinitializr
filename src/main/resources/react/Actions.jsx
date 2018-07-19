@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from "prop-types";
 import StartAllServiceButton from './StartAllServiceButton.jsx';
 
 class Actions extends React.Component {
@@ -14,11 +15,13 @@ class Actions extends React.Component {
 
         return(<div className='actions-container' style={this.props.style}>
             <div className='actions-inner-container' style={actionsInnerStyle}>
-                <StartAllServiceButton style={startAllServiceStyle} />
+                <StartAllServiceButton clusterPath={this.props.clusterPath} style={startAllServiceStyle} />
             </div>
         </div>);
 
     }
 }
+
+Actions.propTypes = {clusterPath: PropTypes.string.isRequired};
 
 export default Actions;

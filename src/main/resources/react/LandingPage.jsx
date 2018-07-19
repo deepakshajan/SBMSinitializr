@@ -13,9 +13,11 @@ class LandingPage extends React.Component {
         super();
 
         this.toggleExpandState = this.toggleExpandState.bind(this);
+        this.setFolderSelectorValue = this.setFolderSelectorValue.bind(this);
 
         this.state = {
             header: {heading: 'SBMSInitializr'},
+            folderSelector: {value: 'D:\\Personal\\Work\\WorkSpace\\ServiceClusterSimple', valid: false, action: this.setFolderSelectorValue},
             progressBar: {value: 56},
             expandMainSection: {expand: false, action: this.toggleExpandState}
         };
@@ -35,8 +37,8 @@ class LandingPage extends React.Component {
         return(<div className='landing-page-container'>
             {isDisplayed && <Header heading={this.state.header.heading} style={headerStyle} />}
             {isDisplayed && <div className='lp-line-div-container' style={lineDivStyle1}>
-                <FolderSelector style={folderSelectorStyle} />
-                <Actions style={actionsStyle} />
+                <FolderSelector value={this.state.folderSelector.value} valid={this.state.folderSelector.valid} action={this.state.folderSelector.action} style={folderSelectorStyle} />
+                <Actions style={actionsStyle} clusterPath={this.state.folderSelector.value}/>
             </div>}
             <div className='lp-line-div-container' style={lineDivStyle2}>
                 <ProgressBar value={this.state.progressBar.value} style={progressBarStyle} />
@@ -53,7 +55,15 @@ class LandingPage extends React.Component {
         this.setState(newState);
     }
 
-    onRecieveFromServer() {
+    setFolderSelectorValue(newValue, newValid){
+        let newState = this.state;
+        newState.folderSelector.value = newValue;
+        newState.folderSelector.valid = newValid;
+        this.setState(newState);
+    }
+
+    onRecieveFromServer(event) {
+        console.log(event.data);
         //TODO update the state accordingly
     }
 }

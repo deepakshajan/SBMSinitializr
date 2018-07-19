@@ -58,7 +58,7 @@ public class ProcessTreeDeployer {
 
     public void iterateOverTreeAndStartProcessInOrder(DeployServiceClusterServiceRequest request) throws IOException {
 
-        DTree<String> dTree = processTreeProvider.getProcessTree(request.getCluserPath());
+        DTree<String> dTree = processTreeProvider.getProcessTree(request.getClusterPath());
         Iterator<String> dTreeIterator = dTree.iterator();
         while(dTreeIterator.hasNext()) {
             String moduleName = dTreeIterator.next();

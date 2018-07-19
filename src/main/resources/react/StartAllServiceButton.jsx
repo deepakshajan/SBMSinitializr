@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import SbmsWebSocket from "./SbmsWebSocket.jsx";
 
 class StartAllServiceButton extends React.Component {
@@ -24,8 +25,25 @@ class StartAllServiceButton extends React.Component {
     }
 
     onClick() {
-        SbmsWebSocket.send('Message from StartAllServiceButton');
+        SbmsWebSocket.send(this.getStartAllModulesMessage());
+    }
+
+    getStartAllModulesMessage() {
+
+        let request = {
+            "endPoint" : "/initializr/deploy",
+            "clusterPath" : this.props.clusterPath.trim(),
+            "buildType" : "maven",
+            "runClean" : false,
+            "runTests" : false,
+            "runBoot" : true
+        };
+
+        let requestAsString = JSON.stringify(request);
+        return requestAsString;
     }
 }
+
+StartAllServiceButton.propTypes = {clusterPath: PropTypes.string.isRequired};
 
 export default StartAllServiceButton;

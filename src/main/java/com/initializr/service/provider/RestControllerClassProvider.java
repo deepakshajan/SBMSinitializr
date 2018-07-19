@@ -18,25 +18,40 @@
  SOFTWARE.
  */
 
-package com.initializr.service.request;
+package com.initializr.service.provider;
 
+import com.initializr.utils.CoreUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-import com.initializr.backbone.SBMSServiceRequest;
+import javax.annotation.PostConstruct;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author Deepak Shajan
  */
-public interface DeployServiceClusterServiceRequest extends SBMSServiceRequest {
+@Component
+public class RestControllerClassProvider {
 
-    String getClusterPath();
+    private Set<Class> restControllerClassSet = new HashSet<>();
 
-    void setClusterPath(String clusterPath);
+    @Autowired
+    private CoreUtils coreUtils;
 
-    String getBuildType();
+    public void init() {
+        Set<Class> restControllers = coreUtils.getAllRestControllers();
+        restControllerClassSet.addAll(restControllers);
+    }
 
-    boolean isRunClean();
+    public Set<Class> getRestControllerClassSet() {
 
-    boolean isRunTests();
+        if(restControllerClassSet != null && !restControllerClassSet.isEmpty())
+            return restControllerClassSet;
+        else
+            init();
 
-    boolean isRunBoot();
+        return restControllerClassSet;
+    }
+
 }

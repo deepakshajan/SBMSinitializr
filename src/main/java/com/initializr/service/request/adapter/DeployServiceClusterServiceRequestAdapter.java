@@ -50,7 +50,7 @@ public class DeployServiceClusterServiceRequestAdapter implements SBMSAdapter {
     private String getPath(DeployServiceClusterServiceRequest deployServiceClusterServiceRequest, String moduleName) {
 
         StringBuilder builder = new StringBuilder();
-        builder.append(deployServiceClusterServiceRequest.getCluserPath());
+        builder.append(deployServiceClusterServiceRequest.getClusterPath());
         builder.append("\\");
         builder.append(moduleName);
         return builder.toString();

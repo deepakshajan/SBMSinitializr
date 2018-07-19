@@ -30,6 +30,7 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.web.client.RestTemplate;
 
 
 /**
@@ -51,6 +52,11 @@ public class SbmSinitializrApplication {
 	@EventListener(ApplicationReadyEvent.class)
 	public void init() {
 		applicationStartUpOperationsBean.registerShutDownHook();
+	}
+
+	@Bean
+	public RestTemplate restTemplate() {
+		return new RestTemplate();
 	}
 
 	@Bean(name = "processTaskExecutor")

@@ -18,25 +18,27 @@
  SOFTWARE.
  */
 
-package com.initializr.service.request;
-
+package com.initializr.service.invoke;
 
 import com.initializr.backbone.SBMSServiceRequest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 
 /**
  * @author Deepak Shajan
  */
-public interface DeployServiceClusterServiceRequest extends SBMSServiceRequest {
+@Component
+@Scope(value = "prototype")
+public class RestServiceInvoker {
 
-    String getClusterPath();
+    @Autowired
+    private RestTemplate restTemplate;
 
-    void setClusterPath(String clusterPath);
+    public String invokeRestService(String endPoint, SBMSServiceRequest serviceRequest) {
 
-    String getBuildType();
-
-    boolean isRunClean();
-
-    boolean isRunTests();
-
-    boolean isRunBoot();
+         String response = restTemplate.postForObject(endPoint, serviceRequest, String.class).toString();
+         return response;
+    }
 }

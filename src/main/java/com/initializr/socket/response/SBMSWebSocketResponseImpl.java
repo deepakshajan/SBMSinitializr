@@ -18,25 +18,10 @@
  SOFTWARE.
  */
 
-package com.initializr.service.request;
-
-
-import com.initializr.backbone.SBMSServiceRequest;
+package com.initializr.socket.response;
 
 /**
  * @author Deepak Shajan
  */
-public interface DeployServiceClusterServiceRequest extends SBMSServiceRequest {
-
-    String getClusterPath();
-
-    void setClusterPath(String clusterPath);
-
-    String getBuildType();
-
-    boolean isRunClean();
-
-    boolean isRunTests();
-
-    boolean isRunBoot();
+public class SBMSWebSocketResponseImpl {
 }
