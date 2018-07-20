@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -52,8 +53,8 @@ public class StopAllProcessService implements SBMSService<StopAllProcessServiceR
     private ThreadUtils threadUtils;
 
     @Override
-    @RequestMapping(value = "/stopAllProcess")
-    public StopAllProcessServiceResponseImpl execute(StopAllProcessServiceRequestImpl request) {
+    @RequestMapping(value = "/stopAllProcess", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    public StopAllProcessServiceResponseImpl execute(@RequestBody StopAllProcessServiceRequestImpl request) {
 
         processPoolOperations.forceStopAllProcess();
         threadUtils.shutdownAllThreads();

@@ -20,9 +20,14 @@
 
 package com.initializr.service.request;
 
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
 /**
  * @author Deepak Shajan
  */
+@Component
+@Scope(value = "prototype")
 public class StopAllProcessServiceRequestImpl implements StopAllProcessServiceRequest {
 
     @Override

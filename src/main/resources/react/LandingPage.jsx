@@ -17,7 +17,7 @@ class LandingPage extends React.Component {
 
         this.state = {
             header: {heading: 'SBMSInitializr'},
-            folderSelector: {value: 'D:\\Personal\\Work\\WorkSpace\\ServiceClusterSimple', valid: false, action: this.setFolderSelectorValue},
+            folderSelector: {value: 'D:\\Personal\\Work\\WorkSpace\\ServiceClusterBasic', valid: false, action: this.setFolderSelectorValue},
             progressBar: {value: 56},
             expandMainSection: {expand: false, action: this.toggleExpandState}
         };

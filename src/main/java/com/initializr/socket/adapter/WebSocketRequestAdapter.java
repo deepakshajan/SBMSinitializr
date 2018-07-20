@@ -25,17 +25,9 @@ import com.initializr.backbone.SBMSAdapter;
 import com.initializr.backbone.SBMSServiceRequest;
 import com.initializr.backbone.SBMSWebSocketRequest;
 import com.initializr.service.cache.ServiceCache;
-import com.initializr.service.invoke.RestServiceInvoker;
-import com.initializr.service.provider.RestControllerClassProvider;
-import com.initializr.utils.ReflectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.Set;
 
 /**
  * @author Deepak Shajan
@@ -45,20 +37,11 @@ import java.util.Set;
 public class WebSocketRequestAdapter implements SBMSAdapter {
 
     @Autowired
-    private RestControllerClassProvider restControllerClassProvider;
-
-    @Autowired
-    private ReflectionUtils reflectionUtils;
-
-    @Autowired
-    private RestServiceInvoker restServiceInvoker;
-
-    @Autowired
     private ServiceCache serviceCache;
 
     public SBMSServiceRequest convertToServiceRequest(SBMSWebSocketRequest webSocketRequest) {
 
-        SBMSServiceRequest serviceRequest = null;
+        SBMSServiceRequest serviceRequest;
         String endPoint = webSocketRequest.getEndPoint();
         Class<? extends SBMSServiceRequest> serviceRequestClass = serviceCache.getServiceRequestTypeForEndPoint(endPoint);
         String webSocketRequestJson = new Gson().toJson(webSocketRequest);
