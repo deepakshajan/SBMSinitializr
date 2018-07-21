@@ -66,6 +66,7 @@ public class SbmSinitializrApplication {
 		executor.setMaxPoolSize(Configuration.getConfiguration().getMaxThreadCount());
 		executor.setQueueCapacity(Configuration.getConfiguration().getThreadQueueCapacity());
 		executor.setWaitForTasksToCompleteOnShutdown(false);
+		executor.setThreadPriority(2);
 		executor.setThreadNamePrefix(TaskConstant.PROCESS_TASK_EXECUTER_NAME);
 		return executor;
 	}
@@ -78,6 +79,7 @@ public class SbmSinitializrApplication {
 		executor.setQueueCapacity(Configuration.getConfiguration().getThreadQueueCapacity());
 		executor.setWaitForTasksToCompleteOnShutdown(false);
 		executor.setThreadNamePrefix(TaskConstant.MONITOR_TASK_EXECUTER_NAME);
+		executor.setThreadPriority(1);
 		return executor;
 	}
 
@@ -88,6 +90,7 @@ public class SbmSinitializrApplication {
 		executor.setMaxPoolSize(Configuration.getConfiguration().getMaxThreadCount());
 		executor.setQueueCapacity(Configuration.getConfiguration().getThreadQueueCapacity());
 		executor.setWaitForTasksToCompleteOnShutdown(false);
+		executor.setThreadPriority(3);
 		executor.setThreadNamePrefix(TaskConstant.SMART_PROCESS_TASK_EXECUTER_NAME);
 		return executor;
 	}
