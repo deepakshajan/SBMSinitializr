@@ -46,19 +46,21 @@ public final class ProcessThreadManager {
     @Autowired
     private ThreadUtils threadUtils;
 
-    private ProcessThread processThread = null;
+    @Autowired
+    private ProcessThread processThread;
 
-    private MonitorThread monitorThread = null;
+    @Autowired
+    private MonitorThread monitorThread;
 
     /**
      * Initiates two new {@link Thread}s which in our case is the {@link ProcessThread} and {@link MonitorThread}.
      * @param request the caller request which contains all the info regarding the microservice. Refer {@link StartProcessServiceRequest}.
      * @return <code>true</code>
      */
-    public boolean startProcess(StartProcessServiceRequest request) {
+    public synchronized boolean startProcess(StartProcessServiceRequest request) {
 
-        this.processThread = new ProcessThread(request);
-        this.monitorThread = new MonitorThread(request);
+        processThread.setRequest(request);
+        monitorThread.setRequest(request);
         threadUtils.startThread(processTaskExecutor, processThread);
         threadUtils.startThread(monitorTaskExecutor, monitorThread);
         return true;

@@ -28,9 +28,14 @@ import com.initializr.process.pool.ProcessPoolProvider;
 import com.initializr.process.thread.completion.EvaluatorRequest;
 import com.initializr.process.thread.completion.MonitorThreadCompletionConditionEvaluator;
 import com.initializr.process.thread.lock.SmartProcessThreadLock;
-import com.initializr.backbone.SBMSServiceRequest;
 import com.initializr.service.request.StartProcessServiceRequest;
+import com.initializr.socket.response.SBMSWebSocketResponseImpl;
 import com.initializr.utils.ThreadUtils;
+import com.initializr.utils.WebSocketUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+import org.springframework.util.SerializationUtils;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -46,6 +51,8 @@ import java.io.IOException;
  * of operation is done for performance reasons.</p>
  * @author Deepak Shajan
  */
+@Component
+@Scope(value = "prototype")
 public final class MonitorThread implements SBMSThread<Void> {
 
     /**
@@ -54,12 +61,11 @@ public final class MonitorThread implements SBMSThread<Void> {
      */
     private StartProcessServiceRequest request;
 
-    /**
-     * @param request request sent by the caller
-     */
-    public MonitorThread(SBMSServiceRequest request) {
-        this.request = (StartProcessServiceRequest) request;
-    }
+    @Autowired
+    private WebSocketUtils webSocketUtils;
+
+    @Autowired
+    private SBMSWebSocketResponseImpl webSocketResponse;
 
     /**
      * Performs the monitoring actions on a single process.
@@ -72,14 +78,35 @@ public final class MonitorThread implements SBMSThread<Void> {
     @Override
     public Void call() throws InterruptedException, IOException {
 
-        while(true) {
-            sleepThreadForSomeTime();
-            File log = getProcessLog(request);
-            boolean isCompleteOrFail = checkAndUpdateCompletion(log);
-            if(isCompleteOrFail)
-                break;
+        while (true) {
+
+            synchronized (SBMSThread.class) {
+
+                sleepThreadForSomeTime();
+
+                File log = getProcessLog(request);
+                boolean isCompleteOrFail = checkAndUpdateCompletion(log);
+                if (isCompleteOrFail)
+                    break;
+
+            }
         }
+
         return null;
+    }
+
+    @Override
+    public synchronized MonitorThread clone() {
+
+        MonitorThread clone;
+        try {
+            clone = (MonitorThread) super.clone();
+            clone.request = (StartProcessServiceRequest) SerializationUtils.deserialize(SerializationUtils.serialize(this.request));
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     /**
@@ -98,7 +125,7 @@ public final class MonitorThread implements SBMSThread<Void> {
      * @param request the caller request which contains all the info regarding the microservice.Refer {@link StartProcessServiceRequest}.
      * @return log file corresponding to the request.
      */
-    private File getProcessLog(StartProcessServiceRequest request) {
+    private synchronized File getProcessLog(StartProcessServiceRequest request) {
 
         File file = new File(LogConstant.LOG_DIRECTORY+"/"+request.getModuleName()+"."+LogConstant.LOG_FILE_EXTENSION_TYPE);
         if(file.exists()) {
@@ -135,6 +162,7 @@ public final class MonitorThread implements SBMSThread<Void> {
         if(null != completionStatus && completionStatus) {
             new ProcessPoolOperations().markProcessAsCompleted(request.getModuleName());
             notifyAllSmartProcessThreads();
+            notifyClientAboutCompletion();
         }
         else if(null != completionStatus && !completionStatus) {
             new ProcessPoolOperations().markProcessAsFailed(request.getModuleName());
@@ -142,6 +170,7 @@ public final class MonitorThread implements SBMSThread<Void> {
         }
         return completionStatus != null ? true : false;
     }
+
 
     /**
      * Parse the log file to check if the process has successfully started or failed.
@@ -184,4 +213,13 @@ public final class MonitorThread implements SBMSThread<Void> {
         new ThreadUtils().notifyAllWithLock(smartProcessThreadLock);
     }
 
+    private synchronized void notifyClientAboutCompletion() {
+
+        webSocketResponse.put("completed", this.request.getModuleName());
+        webSocketUtils.sendMessageToAllWebSocketSessions(webSocketResponse);
+    }
+
+    public synchronized void setRequest(StartProcessServiceRequest request) {
+        this.request = request;
+    }
 }

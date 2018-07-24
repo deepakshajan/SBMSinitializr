@@ -6,6 +6,7 @@ import Actions from "./Actions.jsx";
 import MainSection from "./MainSection.jsx";
 import ExpandMainSection from "./ExpandMainSection.jsx";
 import SbmsWebSocket from "./SbmsWebSocket.jsx";
+import Helper from "./utils/Helper.jsx";
 
 class LandingPage extends React.Component {
 
@@ -14,12 +15,21 @@ class LandingPage extends React.Component {
 
         this.toggleExpandState = this.toggleExpandState.bind(this);
         this.setFolderSelectorValue = this.setFolderSelectorValue.bind(this);
+        this.onRecieveFromServer = this.onRecieveFromServer.bind(this);
+        this.onClickStopAllServiceButton = this.onClickStopAllServiceButton.bind(this);
 
         this.state = {
             header: {heading: 'SBMSInitializr'},
-            folderSelector: {value: 'D:\\Personal\\Work\\WorkSpace\\ServiceClusterBasic', valid: false, action: this.setFolderSelectorValue},
-            progressBar: {value: 56},
-            expandMainSection: {expand: false, action: this.toggleExpandState}
+            folderSelector: {value: 'D:\\Personal\\Work\\WorkSpace\\ServiceClusterSimple', valid: false, action: this.setFolderSelectorValue},
+            progressBar: {value: 0},
+            actions : {action : {stopAllServiceButton : {action : this.onClickStopAllServiceButton}}},
+            expandMainSection: {expand: false, action: this.toggleExpandState},
+            process: {
+                toBeStarted : [],
+                starting : [],
+                completed : []
+            },
+            sbmsWebSocket : {action : this.onRecieveFromServer}
         };
     }
 
@@ -38,14 +48,14 @@ class LandingPage extends React.Component {
             {isDisplayed && <Header heading={this.state.header.heading} style={headerStyle} />}
             {isDisplayed && <div className='lp-line-div-container' style={lineDivStyle1}>
                 <FolderSelector value={this.state.folderSelector.value} valid={this.state.folderSelector.valid} action={this.state.folderSelector.action} style={folderSelectorStyle} />
-                <Actions style={actionsStyle} clusterPath={this.state.folderSelector.value}/>
+                <Actions style={actionsStyle} clusterPath={this.state.folderSelector.value} action={this.state.actions.action}/>
             </div>}
             <div className='lp-line-div-container' style={lineDivStyle2}>
                 <ProgressBar value={this.state.progressBar.value} style={progressBarStyle} />
                 <ExpandMainSection expand={this.state.expandMainSection.expand} style={expandMainSectionStyle} action={this.state.expandMainSection.action} />
             </div>
             <MainSection style={mainSectionStyle} />
-            <SbmsWebSocket onRecieve={this.onRecieveFromServer}/>
+            <SbmsWebSocket onRecieve={this.state.sbmsWebSocket.action} />
         </div>);
     }
 
@@ -55,7 +65,7 @@ class LandingPage extends React.Component {
         this.setState(newState);
     }
 
-    setFolderSelectorValue(newValue, newValid){
+    setFolderSelectorValue(newValue, newValid) {
         let newState = this.state;
         newState.folderSelector.value = newValue;
         newState.folderSelector.valid = newValid;
@@ -63,8 +73,18 @@ class LandingPage extends React.Component {
     }
 
     onRecieveFromServer(event) {
-        console.log(event.data);
-        //TODO update the state accordingly
+        let messageFromServer = event.data;
+        let newState = Helper.modifyState(messageFromServer, this.state);
+        this.setState(newState);
+    }
+
+    onClickStopAllServiceButton() {
+        let newState = this.state;
+        newState.process.toBeStarted = [];
+        newState.process.starting = [];
+        newState.process.completed = [];
+        newState.progressBar.value = 0;
+        this.setState(newState);
     }
 }
 

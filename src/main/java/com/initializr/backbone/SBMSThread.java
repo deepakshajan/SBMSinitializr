@@ -20,10 +20,13 @@
 
 package com.initializr.backbone;
 
+import java.io.Serializable;
 import java.util.concurrent.Callable;
 
 /**
  * @author Deepak Shajan
  */
-public interface SBMSThread<ReturnTypeT> extends Callable<ReturnTypeT>{
+public interface SBMSThread<ReturnTypeT> extends Callable<ReturnTypeT>, Cloneable, Serializable {
+
+    SBMSThread clone();
 }

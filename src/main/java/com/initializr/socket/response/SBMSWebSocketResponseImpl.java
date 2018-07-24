@@ -20,8 +20,17 @@
 
 package com.initializr.socket.response;
 
+import com.initializr.backbone.SBMSWebSocketResponse;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
+import java.util.concurrent.ConcurrentHashMap;
+
 /**
  * @author Deepak Shajan
  */
-public class SBMSWebSocketResponseImpl {
+@Component
+@Scope(value = "prototype")
+public class SBMSWebSocketResponseImpl extends ConcurrentHashMap<String, String> implements SBMSWebSocketResponse {
+
 }

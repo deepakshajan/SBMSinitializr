@@ -24,9 +24,14 @@ import com.initializr.backbone.SBMSThread;
 import com.initializr.process.operations.ProcessPoolOperations;
 import com.initializr.process.operations.ProcessThreadOperations;
 import com.initializr.service.request.StartProcessServiceRequest;
+import com.initializr.socket.response.SBMSWebSocketResponseImpl;
+import com.initializr.utils.WebSocketUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+import org.springframework.util.SerializationUtils;
 
 import java.io.IOException;
-import java.util.concurrent.Callable;
 
 /**
  * Tread responsible for starting a microservice.
@@ -35,6 +40,8 @@ import java.util.concurrent.Callable;
  * .{@link ProcessThread}. The {@link ProcessThread} initiates the start operation of the process. Each {@link ProcessThread} starts only a single process.</p>
  * @author Deepak Shajan
  */
+@Component
+@Scope(value = "prototype")
 public class ProcessThread implements SBMSThread<Boolean> {
 
     /**
@@ -43,17 +50,16 @@ public class ProcessThread implements SBMSThread<Boolean> {
      */
     private StartProcessServiceRequest request = null;
 
+    @Autowired
+    private WebSocketUtils webSocketUtils;
+
+    @Autowired
+    private SBMSWebSocketResponseImpl webSocketResponse;
+
     /**
      * The process instance which correspond to the system process of the microservice.
      */
     private Process process = null;
-
-    /**
-     * @param request request sent by the caller
-     */
-    public ProcessThread(StartProcessServiceRequest request) {
-        this.request = request;
-    }
 
     /**
      * Initiates the system process and updates the {@link com.initializr.process.pool.ProcessPoolProvider#pool}.
@@ -63,13 +69,33 @@ public class ProcessThread implements SBMSThread<Boolean> {
     @Override
     public Boolean call() throws IOException {
 
-        ProcessThreadOperations processThreadOperations = new ProcessThreadOperations();
-        ProcessPoolOperations processPoolOperations = new ProcessPoolOperations();
+            ProcessThreadOperations processThreadOperations = new ProcessThreadOperations();
+            ProcessPoolOperations processPoolOperations = new ProcessPoolOperations();
 
-        process = processThreadOperations.startProcess(request);
-        processPoolOperations.addProcessToPool(this);
+            process = processThreadOperations.startProcess(request);
+            processPoolOperations.addProcessToPool(this);
+            notifyClient();
 
         return true;
+    }
+
+    @Override
+    public synchronized ProcessThread clone() {
+
+        ProcessThread clone;
+        try {
+            clone = (ProcessThread) super.clone();
+            clone.request = (StartProcessServiceRequest) SerializationUtils.deserialize(SerializationUtils.serialize(this.request));
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private synchronized void notifyClient() {
+        webSocketResponse.put("starting", this.getProcessIdentifier());
+        webSocketUtils.sendMessageToAllWebSocketSessions(webSocketResponse);
     }
 
     /**
@@ -86,4 +112,8 @@ public class ProcessThread implements SBMSThread<Boolean> {
         return process;
     }
 
+
+    public synchronized void setRequest(StartProcessServiceRequest request) {
+        this.request = request;
+    }
 }

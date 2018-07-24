@@ -37,7 +37,7 @@ class SbmsWebSocket extends React.Component{
 
     static executeAllCallBacksOnRecieve(event) {
 
-        SbmsWebSocket.callbacksOnRecieve.forEach(n => n(event));
+        setTimeout(SbmsWebSocket.callbacksOnRecieve.forEach(n => n(event)),100);
     }
 
     componentWillMount() {

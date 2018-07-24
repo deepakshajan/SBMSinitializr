@@ -28,7 +28,7 @@ import java.io.Serializable;
  * Interface to be extended by all requests incoming to any service in the application.
  * @author Deepak Shajan
  */
-public interface SBMSServiceRequest extends Serializable{
+public interface SBMSServiceRequest extends Serializable, Cloneable{
 
 
     /**

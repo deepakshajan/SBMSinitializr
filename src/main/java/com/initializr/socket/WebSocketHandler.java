@@ -22,20 +22,18 @@ package com.initializr.socket;
 
 import com.google.gson.Gson;
 import com.initializr.backbone.SBMSWebSocketRequest;
-import com.initializr.service.request.DeployServiceClusterServiceRequestImpl;
+import com.initializr.backbone.SBMSWebSocketResponse;
 import com.initializr.socket.request.SBMSWebSocketRequestImpl;
-import com.initializr.socket.response.SBMSWebSocketResponseImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.regex.Pattern;
 
 /**
  * @author Deepak Shajan
@@ -43,13 +41,7 @@ import java.util.regex.Pattern;
 @Component
 public class WebSocketHandler extends TextWebSocketHandler {
 
-    List<WebSocketSession> sessions = new CopyOnWriteArrayList<>();
-
-    @Autowired
-    private RestTemplate restTemplate;
-
-    @Autowired
-    private DeployServiceClusterServiceRequestImpl deployServiceClusterServiceRequest;
+    private volatile List<WebSocketSession> sessions = Collections.synchronizedList(new CopyOnWriteArrayList<>());
 
     @Autowired
     private WebSocketRequestDispatcher webSocketRequestDispatcher;
@@ -60,9 +52,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
         String payload = message.getPayload();
         SBMSWebSocketRequest request = new Gson().fromJson(payload, SBMSWebSocketRequestImpl.class);
 
-        String response = webSocketRequestDispatcher.redirect(request);
-
-        session.sendMessage(new TextMessage("Message is : "+ response.toString()));
+        webSocketRequestDispatcher.redirect(request);
     }
 
     @Override
@@ -71,7 +61,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
     }
 
 
-    public void sendMessageToAllWebSocketSessions(SBMSWebSocketResponseImpl message) {
+    public synchronized void sendMessageToAllWebSocketSessions(SBMSWebSocketResponse message) {
 
         for(WebSocketSession session : sessions) {
             try {
@@ -81,16 +71,6 @@ public class WebSocketHandler extends TextWebSocketHandler {
                 e.printStackTrace();
             }
         }
-    }
-
-
-    private void getServiceRequest(SBMSWebSocketRequest request) {
-
-        deployServiceClusterServiceRequest.setClusterPath(request.getClusterPath().replaceAll(Pattern.quote("\\\\"),"\\"));
-        deployServiceClusterServiceRequest.setBuildType(request.getBuildType());
-        deployServiceClusterServiceRequest.setRunBoot(request.isRunBoot());
-        deployServiceClusterServiceRequest.setRunClean(request.isRunClean());
-        deployServiceClusterServiceRequest.setRunTests(request.isRunTests());
     }
 
 }

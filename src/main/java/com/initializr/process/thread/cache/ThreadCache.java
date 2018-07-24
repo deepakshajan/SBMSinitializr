@@ -46,7 +46,7 @@ public enum ThreadCache implements SBMSCache {
         return INSTANCE.threadCache;
     }
 
-    public boolean addThreadToCache(Future thread) {
+    public synchronized boolean addThreadToCache(Future thread) {
         return INSTANCE.threadCache.add(thread);
     }
 

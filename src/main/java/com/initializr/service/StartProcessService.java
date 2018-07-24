@@ -58,6 +58,9 @@ public final class StartProcessService implements SBMSService<StartProcessServic
     @Autowired
     private ThreadUtils threadUtils;
 
+    @Autowired
+    private MonitorThread monitorThread;
+
 
     /**
      *  Starts and monitors a new system process
@@ -108,7 +111,7 @@ public final class StartProcessService implements SBMSService<StartProcessServic
      */
     private void startProcessMonitorThread(StartProcessServiceRequestImpl request) {
 
-        MonitorThread monitorThread = new MonitorThread(request);
+        monitorThread.setRequest(request);
         threadUtils.startThread(monitorTaskExecutor, monitorThread);
 
     }

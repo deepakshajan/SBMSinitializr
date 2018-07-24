@@ -173,7 +173,7 @@ package com.initializr.process.pool;
       * @param processIdentifier Unique identifier for each process, in our case the module name.
       * @return true if completed, else returns false.
       */
-    public boolean isProcessStarted(String processIdentifier) {
+    public synchronized boolean isProcessStarted(String processIdentifier) {
 
         if(completedProcessIds == null)
             return false;
@@ -185,7 +185,7 @@ package com.initializr.process.pool;
       * @param processIdentifier Unique identifier for each process, in our case the module name.
       * @return true if completed, else returns false.
       */
-     public boolean isProcessFailed(String processIdentifier) {
+     public synchronized boolean isProcessFailed(String processIdentifier) {
 
          if(failedProcessIds == null)
              return false;

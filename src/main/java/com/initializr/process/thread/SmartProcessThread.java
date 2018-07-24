@@ -25,11 +25,14 @@ import com.initializr.process.ProcessThreadManager;
 import com.initializr.process.operations.ProcessPoolOperations;
 import com.initializr.process.thread.lock.SmartProcessThreadLock;
 import com.initializr.service.request.StartProcessServiceRequest;
+import com.initializr.socket.response.SBMSWebSocketResponseImpl;
 import com.initializr.utils.FileUtils;
 import com.initializr.utils.ThreadUtils;
+import com.initializr.utils.WebSocketUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.springframework.util.SerializationUtils;
 
 import java.io.IOException;
 import java.util.List;
@@ -40,7 +43,7 @@ import java.util.List;
  */
 @Component
 @Scope(value = "prototype")
-public class SmartProcessThread implements SBMSThread<Boolean>, Cloneable {
+public class SmartProcessThread implements SBMSThread<Boolean>{
 
     private StartProcessServiceRequest request;
 
@@ -55,11 +58,22 @@ public class SmartProcessThread implements SBMSThread<Boolean>, Cloneable {
     @Autowired
     private ThreadUtils threadUtils;
 
+    @Autowired
+    private WebSocketUtils webSocketUtils;
+
+    @Autowired
+    private SBMSWebSocketResponseImpl webSocketResponse;
+
+    @Autowired
+    private ProcessPoolOperations processPoolOperations;
+
     @Override
     public Boolean call() throws IOException {
 
         synchronized (SmartProcessThreadLock.getLock()) {
-            boolean isProcessRunning = new ProcessPoolOperations().isProcessRunning(request.getModuleName());
+
+            notifyClient();
+            boolean isProcessRunning = processPoolOperations.isProcessRunning(request.getModuleName());
             if (!isProcessRunning) {
                 waitUntilProcessCanBeStarted();
                 processThreadManager.startProcess(request);
@@ -68,16 +82,20 @@ public class SmartProcessThread implements SBMSThread<Boolean>, Cloneable {
         return true;
     }
 
-    public void setRequestToThread(StartProcessServiceRequest request) {
+    public synchronized void setRequestToThread(StartProcessServiceRequest request) {
         this.request = request;
     }
 
     @Override
-    public SmartProcessThread clone() {
+    public synchronized SmartProcessThread clone() {
 
+        SmartProcessThread clone;
         try {
-            return (SmartProcessThread) super.clone();
+            clone = (SmartProcessThread) super.clone();
+            clone.request = (StartProcessServiceRequest) SerializationUtils.deserialize(SerializationUtils.serialize(this.request));
+            return clone;
         } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
             return null;
         }
     }
@@ -106,6 +124,12 @@ public class SmartProcessThread implements SBMSThread<Boolean>, Cloneable {
                 return false;
         }
         return true;
+    }
+
+    private synchronized void notifyClient() {
+
+        webSocketResponse.put("toBeStarted", this.request.getModuleName());
+        webSocketUtils.sendMessageToAllWebSocketSessions(webSocketResponse);
     }
 
 }

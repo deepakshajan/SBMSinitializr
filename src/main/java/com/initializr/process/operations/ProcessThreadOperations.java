@@ -47,7 +47,7 @@ public class ProcessThreadOperations {
      * @return the {@link Process} instance corresponding to microservice start operation.
      * @throws IOException any exception is thrown back to the user
      */
-    public Process startProcess(@NotNull StartProcessServiceRequest request) throws IOException {
+    public synchronized Process startProcess(@NotNull StartProcessServiceRequest request) throws IOException {
 
         Process process;
         ProcessBuilder processBuilder = new ProcessBuilder(new String[]{"cmd", "/c", request.getExecutableCommand()});

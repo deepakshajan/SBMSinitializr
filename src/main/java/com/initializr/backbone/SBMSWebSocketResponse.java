@@ -20,8 +20,12 @@
 
 package com.initializr.backbone;
 
+import java.io.Serializable;
+
 /**
  * @author Deepak Shajan
  */
-public interface SBMSWebSocketResponse {
+public interface SBMSWebSocketResponse extends Serializable{
+
+
 }
