@@ -16,13 +16,12 @@ class LandingPage extends React.Component {
         this.toggleExpandState = this.toggleExpandState.bind(this);
         this.setFolderSelectorValue = this.setFolderSelectorValue.bind(this);
         this.onRecieveFromServer = this.onRecieveFromServer.bind(this);
-        this.onClickStopAllServiceButton = this.onClickStopAllServiceButton.bind(this);
 
         this.state = {
             header: {heading: 'SBMSInitializr'},
             folderSelector: {value: 'D:\\Personal\\Work\\WorkSpace\\ServiceClusterSimple', valid: false, action: this.setFolderSelectorValue},
             progressBar: {value: 0},
-            actions : {action : {stopAllServiceButton : {action : this.onClickStopAllServiceButton}}},
+            actions : {action : {stopAllServiceButton : {}}},
             expandMainSection: {expand: false, action: this.toggleExpandState},
             process: {
                 toBeStarted : [],
@@ -78,14 +77,6 @@ class LandingPage extends React.Component {
         this.setState(newState);
     }
 
-    onClickStopAllServiceButton() {
-        let newState = this.state;
-        newState.process.toBeStarted = [];
-        newState.process.starting = [];
-        newState.process.completed = [];
-        newState.progressBar.value = 0;
-        this.setState(newState);
-    }
 }
 
 export default LandingPage;

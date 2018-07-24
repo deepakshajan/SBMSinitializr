@@ -24,8 +24,11 @@ package com.initializr.process.operations;
 import com.initializr.exception.ProcessNotFoundInPoolException;
 import com.initializr.process.pool.ProcessPoolProvider;
 import com.initializr.process.thread.ProcessThread;
+import com.initializr.socket.response.SBMSWebSocketResponseImpl;
+import com.initializr.utils.WebSocketUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -43,6 +46,12 @@ import java.util.Map;
 public class ProcessPoolOperations {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProcessPoolOperations.class);
+
+    @Autowired
+    private WebSocketUtils webSocketUtils;
+
+    @Autowired
+    private SBMSWebSocketResponseImpl webSocketResponse;
 
     /**
      * Add a process to the processPool.
@@ -140,6 +149,9 @@ public class ProcessPoolOperations {
         process.destroyForcibly();
         processThreadOperations.destroyProcessForcibily(process);
         boolean hasStopped = processPoolProvider.removeProcessFromPool(processIdentifier);
+
+        webSocketResponse.put("stopped", processIdentifier);
+        webSocketUtils.sendMessageToAllWebSocketSessions(webSocketResponse);
         LOGGER.info("***** Stopped process "+ processIdentifier +" *****");
         return hasStopped;
     }

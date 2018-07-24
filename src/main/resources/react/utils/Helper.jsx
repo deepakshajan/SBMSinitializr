@@ -14,6 +14,12 @@ class Helper {
             newState.process[key].push(dataObj[key]);
         } else if(key === "toBeStarted") {
             newState.process[key].push(dataObj[key]);
+        } else if(key === "stopped") {
+            newState.process.toBeStarted.pop(dataObj[key]);
+            newState.process.starting.pop(dataObj[key]);
+            newState.process.completed.pop(dataObj[key]);
+            let progressValue = Helper.calculateProgressValue(newState);
+            newState.progressBar.value = progressValue;
         }
         return newState;
     }
@@ -22,7 +28,7 @@ class Helper {
 
         let toBeStartedProcessCount = state.process.toBeStarted.length;
         let completedProcessCount = state.process.completed.length;
-        let completionPercentage = Math.floor((completedProcessCount/toBeStartedProcessCount)*100);
+        let completionPercentage = toBeStartedProcessCount !==0 ? Math.floor((completedProcessCount/toBeStartedProcessCount)*100) : 0;
         return completionPercentage;
     }
 
