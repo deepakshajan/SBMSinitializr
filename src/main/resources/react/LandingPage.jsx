@@ -23,10 +23,12 @@ class LandingPage extends React.Component {
             progressBar: {value: 0},
             actions : {action : {stopAllServiceButton : {}}},
             expandMainSection: {expand: false, action: this.toggleExpandState},
+            ProcessTree: {},
             process: {
                 toBeStarted : [],
                 starting : [],
-                completed : []
+                completed : [],
+                failed : []
             },
             sbmsWebSocket : {action : this.onRecieveFromServer}
         };
@@ -53,7 +55,7 @@ class LandingPage extends React.Component {
                 <ProgressBar value={this.state.progressBar.value} style={progressBarStyle} />
                 <ExpandMainSection expand={this.state.expandMainSection.expand} style={expandMainSectionStyle} action={this.state.expandMainSection.action} />
             </div>
-            <MainSection style={mainSectionStyle} />
+            <MainSection processData={this.state.process} style={mainSectionStyle} />
             <SbmsWebSocket onRecieve={this.state.sbmsWebSocket.action} />
         </div>);
     }

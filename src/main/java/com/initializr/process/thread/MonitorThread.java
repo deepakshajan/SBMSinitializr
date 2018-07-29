@@ -167,6 +167,7 @@ public final class MonitorThread implements SBMSThread<Void> {
         else if(null != completionStatus && !completionStatus) {
             new ProcessPoolOperations().markProcessAsFailed(request.getModuleName());
             notifyAllSmartProcessThreads();
+            notifyClientAboutFailure();
         }
         return completionStatus != null ? true : false;
     }
@@ -216,6 +217,12 @@ public final class MonitorThread implements SBMSThread<Void> {
     private synchronized void notifyClientAboutCompletion() {
 
         webSocketResponse.put("completed", this.request.getModuleName());
+        webSocketUtils.sendMessageToAllWebSocketSessions(webSocketResponse);
+    }
+
+    private void notifyClientAboutFailure() {
+
+        webSocketResponse.put("failed", this.request.getModuleName());
         webSocketUtils.sendMessageToAllWebSocketSessions(webSocketResponse);
     }
 

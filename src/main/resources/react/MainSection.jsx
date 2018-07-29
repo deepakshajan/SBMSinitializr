@@ -1,4 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import AtomicProcessPanel from "./AtomicProcessPanel.jsx";
 
 class MainSection extends React.Component {
 
@@ -8,13 +10,18 @@ class MainSection extends React.Component {
     }
 
     render() {
+        let atomicProcessPanelStyle = {width:'99%'};
+
         return (<div className='main-section-container' style={this.props.style}>
             <div className='main-section-inner-container'>
-
+                <AtomicProcessPanel title='Root' status='Executing' showLogButton={true} style={atomicProcessPanelStyle}/>
             </div>
         </div>);
     }
 
+
 }
+
+MainSection.propTypes = {processData: PropTypes.object.isRequired};
 
 export default MainSection;
