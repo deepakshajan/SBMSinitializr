@@ -11,15 +11,15 @@ class FolderSelector extends React.Component {
     }
 
     render(){
-        var fsStyleInner = {position:'relative',width:'100%'};
-        var fsInputContainerStyle = {width:'97%',display:'inline-block'};
-        var labelDivStyle = {width:'10%',display:'inline-block'};
-        var labelStyle = {fontWeight:'bold',width:'100%'};
-        var inputDivStyle = {width:'90%',display:'inline-block'};
-        var inputStyle = {borderColor:'lightgreen',width: '100%'};
-        var validationDivStyle = {width:'2%',display:'inline-block',float:'right'};
-        var tickDefaultStyle = {fontWeight:'bolder',color:'green',margin:'unset',cursor:'default'};
-        var crossDefaultStyle = {fontWeight:'bolder',color:'red',margin:'unset',cursor:'default'};
+        let fsStyleInner = {position:'relative',width:'100%'};
+        let fsInputContainerStyle = {width:'97%',display:'inline-block'};
+        let labelDivStyle = {width:'10%',display:'inline-block'};
+        let labelStyle = {fontWeight:'bold',width:'100%'};
+        let inputDivStyle = {width:'90%',display:'inline-block'};
+        let inputStyle = {borderColor:'lightgreen',width: '100%'};
+        let validationDivStyle = {width:'2%',display:'inline-block',float:'right'};
+        let tickDefaultStyle = {fontWeight:'bolder',color:'green',margin:'unset',cursor:'default'};
+        let crossDefaultStyle = {fontWeight:'bolder',color:'red',margin:'unset',cursor:'default'};
 
         return(<div className='folder-selector-container' style={this.props.style}>
             <div className='folder-selector-inner-container' style={fsStyleInner}>
@@ -28,7 +28,7 @@ class FolderSelector extends React.Component {
                         <label htmlFor='folder-selector-input' style={labelStyle}>Directory : </label>
                     </div>
                     <div style={inputDivStyle}>
-                        <input name='folder-selector-input' type='text' value={this.props.value} onChange={this.validateAndSetState} placeholder='Path to the micro service cluster(eg : D:\code\serviceCluster)' style={inputStyle}></input>
+                        <input name='folder-selector-input' ref='folderSelectorInput' type='text' value={this.props.value} onChange={this.validateAndSetState} placeholder='Path to the micro service cluster(eg : D:\code\serviceCluster)' style={inputStyle}></input>
                     </div>
                 </div>
                 <div className='folder-selector-validation-status' style={validationDivStyle}>
@@ -42,17 +42,18 @@ class FolderSelector extends React.Component {
     validateAndSetState(event) {
 
         let valid = false;
-        if (this.checkForValidDirectory(event))
+        let value = ReactDOM.findDOMNode(this.refs.folderSelectorInput).value;
+        if (this.checkForValidDirectory(value))
             valid = true;
         else
             valid = false;
 
-        this.props.action(event.target.value, valid);
+        this.props.action(value, valid);
     }
 
-    checkForValidDirectory(event) {
-        var validDirectoryRegEx = new RegExp("^[A-Z]:(\\\\[a-z|A-Z]{1,99}){1,99}$");
-        var valid = validDirectoryRegEx.test(event.target.value.trim());
+    checkForValidDirectory(value) {
+        let validDirectoryRegEx = new RegExp("^[A-Z]:(\\\\[a-z|A-Z]{1,99}){1,99}$");
+        let valid = validDirectoryRegEx.test(value.trim());
         return valid;
     }
 

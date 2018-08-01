@@ -8,7 +8,7 @@ import ExpandMainSection from "./ExpandMainSection.jsx";
 import SbmsWebSocket from "./SbmsWebSocket.jsx";
 import Helper from "./utils/Helper.jsx";
 
-class LandingPage extends React.Component {
+class  LandingPage extends React.Component {
 
     constructor() {
         super();
@@ -19,12 +19,12 @@ class LandingPage extends React.Component {
 
         this.state = {
             header: {heading: 'SBMSInitializr'},
-            folderSelector: {value: 'D:\\Personal\\Work\\WorkSpace\\ServiceClusterSimple', valid: false, action: this.setFolderSelectorValue},
+            folderSelector: {value: 'D:\\Personal\\Work\\WorkSpace\\ServiceClusterBasic', valid: false, action: this.setFolderSelectorValue},
             progressBar: {value: 0},
             actions : {action : {stopAllServiceButton : {}}},
             expandMainSection: {expand: false, action: this.toggleExpandState},
-            ProcessTree: {},
             process: {
+                processTree : {},
                 toBeStarted : [],
                 starting : [],
                 completed : [],

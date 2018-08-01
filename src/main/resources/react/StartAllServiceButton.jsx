@@ -25,6 +25,7 @@ class StartAllServiceButton extends React.Component {
     }
 
     onClick() {
+        SbmsWebSocket.send(this.getProcessTreeMessage());
         SbmsWebSocket.send(this.getStartAllModulesMessage());
     }
 
@@ -37,6 +38,17 @@ class StartAllServiceButton extends React.Component {
             "runClean" : false,
             "runTests" : false,
             "runBoot" : true
+        };
+
+        let requestAsString = JSON.stringify(request);
+        return requestAsString;
+    }
+
+    getProcessTreeMessage() {
+
+        let request = {
+            "endPoint" : "/initializr/getProcessTree",
+            "clusterPath" : this.props.clusterPath.trim()
         };
 
         let requestAsString = JSON.stringify(request);

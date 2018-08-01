@@ -24,6 +24,7 @@ import com.google.gson.Gson;
 import com.initializr.backbone.SBMSWebSocketRequest;
 import com.initializr.backbone.SBMSWebSocketResponse;
 import com.initializr.socket.request.SBMSWebSocketRequestImpl;
+import com.initializr.socket.response.SBMSWebSocketResponseImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;
@@ -46,13 +47,20 @@ public class WebSocketHandler extends TextWebSocketHandler {
     @Autowired
     private WebSocketRequestDispatcher webSocketRequestDispatcher;
 
+    @Autowired
+    private SBMSWebSocketResponseImpl sbmsWebSocketResponse;
+
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
 
         String payload = message.getPayload();
         SBMSWebSocketRequest request = new Gson().fromJson(payload, SBMSWebSocketRequestImpl.class);
 
-        webSocketRequestDispatcher.redirect(request);
+        String response = webSocketRequestDispatcher.redirect(request);
+        String jsonResponse = new Gson().toJson(response);
+        sbmsWebSocketResponse.clear();
+        sbmsWebSocketResponse.put(request.getEndPoint(), jsonResponse);
+        sendMessageToAllWebSocketSessions(sbmsWebSocketResponse);
     }
 
     @Override

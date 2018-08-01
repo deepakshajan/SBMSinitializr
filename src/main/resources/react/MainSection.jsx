@@ -14,7 +14,7 @@ class MainSection extends React.Component {
 
         return (<div className='main-section-container' style={this.props.style}>
             <div className='main-section-inner-container'>
-                <AtomicProcessPanel title='Root' status='Executing' showLogButton={true} style={atomicProcessPanelStyle}/>
+                <AtomicProcessPanel title='Root' showLogButton={true} style={atomicProcessPanelStyle}/>
             </div>
         </div>);
     }

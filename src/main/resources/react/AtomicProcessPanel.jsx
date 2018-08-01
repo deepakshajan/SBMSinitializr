@@ -47,8 +47,8 @@ class AtomicProcessPanel extends React.Component {
 
 }
 
-AtomicProcessPanel.propTypes = {title: PropTypes.string.isRequired, showLogButton: PropTypes.bool};
+AtomicProcessPanel.propTypes = {title: PropTypes.string.isRequired, showLogButton: PropTypes.bool,status:PropTypes.string};
 
-AtomicProcessPanel.defaultProps = {title: 'Title', showLogButton: true};
+AtomicProcessPanel.defaultProps = {title: 'Title', showLogButton: true, status:'not started'};
 
 export default AtomicProcessPanel;

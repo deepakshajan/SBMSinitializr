@@ -5,24 +5,31 @@ class Helper {
         let newState = state;
         let dataObj = JSON.parse(data);
         let key = Object.keys(dataObj)[0];
+        let value = dataObj[key];
         if(key === "completed") {
-            newState.process[key].push(dataObj[key]);
-            newState.process.starting.pop(dataObj[key]);
+            newState.process[key].push(value);
+            newState.process.starting.pop(value);
             let progressValue = Helper.calculateProgressValue(newState);
             newState.progressBar.value = progressValue;
         } else if(key === "starting") {
-            newState.process[key].push(dataObj[key]);
+            newState.process[key].push(value);
         } else if(key === "toBeStarted") {
-            newState.process[key].push(dataObj[key]);
+            newState.process[key].push(value);
         } else if(key === "stopped") {
-            newState.process.toBeStarted.pop(dataObj[key]);
-            newState.process.starting.pop(dataObj[key]);
-            newState.process.completed.pop(dataObj[key]);
+            newState.process.toBeStarted.pop(value);
+            newState.process.starting.pop(value);
+            newState.process.completed.pop(value);
             let progressValue = Helper.calculateProgressValue(newState);
             newState.progressBar.value = progressValue;
         } else if(key === "failed") {
-            newState.process.failed.push()(dataObj[key]);
-            newState.process.starting.pop(dataObj[key]);
+            newState.process.failed.push(value);
+            newState.process.starting.pop(value);
+        } else if(key === "/initializr/getProcessTree") {
+            value = value.replace('"{', '{');
+            value = value.replace('}"', '}');
+            value = value.split('\\"').join('"');
+            let valueObj = JSON.parse(value);
+            newState.process.processTree = valueObj;
         }
         return newState;
     }
