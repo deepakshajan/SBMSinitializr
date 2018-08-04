@@ -25,6 +25,7 @@ class StopAllServiceButton extends React.Component {
 
     onClick() {
         SbmsWebSocket.send(this.getStopAllModulesMessage());
+        this.props.action();
     }
 
     getStopAllModulesMessage() {

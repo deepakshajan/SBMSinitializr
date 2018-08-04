@@ -30,6 +30,7 @@ class Helper {
             value = value.split('\\"').join('"');
             let valueObj = JSON.parse(value);
             newState.process.processTree = valueObj;
+            newState.mainSection.loadContent = true;
         }
         return newState;
     }

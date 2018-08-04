@@ -25,6 +25,6 @@ class ProcessPanelStatus extends React.Component {
 
 ProcessPanelStatus.propTypes = {value: PropTypes.string, colour: PropTypes.string};
 
-ProcessPanelStatus.defaultProps = {value : "DefaultValue", colour:'blue'};
+ProcessPanelStatus.defaultProps = {value : "DefaultValue", colour:'white'};
 
 export default ProcessPanelStatus;

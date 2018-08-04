@@ -16,13 +16,15 @@ class  LandingPage extends React.Component {
         this.toggleExpandState = this.toggleExpandState.bind(this);
         this.setFolderSelectorValue = this.setFolderSelectorValue.bind(this);
         this.onRecieveFromServer = this.onRecieveFromServer.bind(this);
+        this.clearMainContent = this.clearMainContent.bind(this);
 
         this.state = {
             header: {heading: 'SBMSInitializr'},
             folderSelector: {value: 'D:\\Personal\\Work\\WorkSpace\\ServiceClusterBasic', valid: false, action: this.setFolderSelectorValue},
             progressBar: {value: 0},
-            actions : {action : {stopAllServiceButton : {}}},
+            actions : {stopAllServiceButton: {action: this.clearMainContent}},
             expandMainSection: {expand: false, action: this.toggleExpandState},
+            mainSection: {loadContent: false},
             process: {
                 processTree : {},
                 toBeStarted : [],
@@ -39,7 +41,7 @@ class  LandingPage extends React.Component {
         var progressBarStyle = {marginBottom:10,width:'95%',height:15,display:'inline-block'};
         var folderSelectorStyle = {width: '70%', marginBottom:5, display:'inline-block'};
         var actionsStyle = {width:'29%',height:15,display:'inline-block',borderStyle:'dotted',borderColor:'lightgreen'};
-        var mainSectionStyle = {width:'100%',borderStyle:'inset',borderColor:'lightgreen',height:500};
+        var mainSectionStyle = {width:'100%',borderStyle:'inset',borderColor:'lightgreen',minHeight:450};
         var expandMainSectionStyle = {width:'5%',display:'inline-table'};
         var lineDivStyle1 = {};
         var lineDivStyle2 = {};
@@ -49,13 +51,13 @@ class  LandingPage extends React.Component {
             {isDisplayed && <Header heading={this.state.header.heading} style={headerStyle} />}
             {isDisplayed && <div className='lp-line-div-container' style={lineDivStyle1}>
                 <FolderSelector value={this.state.folderSelector.value} valid={this.state.folderSelector.valid} action={this.state.folderSelector.action} style={folderSelectorStyle} />
-                <Actions style={actionsStyle} clusterPath={this.state.folderSelector.value} action={this.state.actions.action}/>
+                <Actions style={actionsStyle} clusterPath={this.state.folderSelector.value} action={this.state.actions}/>
             </div>}
             <div className='lp-line-div-container' style={lineDivStyle2}>
                 <ProgressBar value={this.state.progressBar.value} style={progressBarStyle} />
                 <ExpandMainSection expand={this.state.expandMainSection.expand} style={expandMainSectionStyle} action={this.state.expandMainSection.action} />
             </div>
-            <MainSection processData={this.state.process} style={mainSectionStyle} />
+            <MainSection processData={this.state.process} loadContent={this.state.mainSection.loadContent} style={mainSectionStyle} />
             <SbmsWebSocket onRecieve={this.state.sbmsWebSocket.action} />
         </div>);
     }
@@ -70,6 +72,12 @@ class  LandingPage extends React.Component {
         let newState = this.state;
         newState.folderSelector.value = newValue;
         newState.folderSelector.valid = newValid;
+        this.setState(newState);
+    }
+
+    clearMainContent() {
+        let newState = this.state;
+        newState.mainSection.loadContent = false;
         this.setState(newState);
     }
 

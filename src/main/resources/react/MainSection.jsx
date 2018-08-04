@@ -10,18 +10,18 @@ class MainSection extends React.Component {
     }
 
     render() {
-        let atomicProcessPanelStyle = {width:'99%'};
+        let innerContainerStyle = {width: '-webkit-fill-available'};
+        let atomicProcessPanelStyle = {width:'99%',height:'inherit'};
 
         return (<div className='main-section-container' style={this.props.style}>
-            <div className='main-section-inner-container'>
-                <AtomicProcessPanel title='Root' showLogButton={true} style={atomicProcessPanelStyle}/>
+            <div className='main-section-inner-container' style={innerContainerStyle}>
+                {this.props.loadContent && <AtomicProcessPanel title='Root' processDetails={this.props.processData} processList={this.props.processData.processTree.root.children} showChilds={true} isRoot={true} style={atomicProcessPanelStyle}/>}
             </div>
         </div>);
     }
 
-
 }
 
-MainSection.propTypes = {processData: PropTypes.object.isRequired};
+MainSection.propTypes = {processData: PropTypes.object.isRequired, loadContent:PropTypes.bool.isRequired};
 
 export default MainSection;

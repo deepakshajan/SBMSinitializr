@@ -18,7 +18,7 @@ class Actions extends React.Component {
         return(<div className='actions-container' style={this.props.style}>
             <div className='actions-inner-container' style={actionsInnerStyle}>
                 <StartAllServiceButton clusterPath={this.props.clusterPath} style={startAllServiceStyle} />
-                <StopAllServiceButton clusterPath={this.props.clusterPath} style={stopAllServiceStyle}/>
+                <StopAllServiceButton clusterPath={this.props.clusterPath} action={this.props.action.stopAllServiceButton.action} style={stopAllServiceStyle}/>
             </div>
         </div>);
 
