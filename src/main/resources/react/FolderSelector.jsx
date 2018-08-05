@@ -52,7 +52,7 @@ class FolderSelector extends React.Component {
     }
 
     checkForValidDirectory(value) {
-        let validDirectoryRegEx = new RegExp("^[A-Z]:(\\\\[a-z|A-Z]{1,99}){1,99}$");
+        let validDirectoryRegEx = new RegExp("^[A-Z]:(\\\\[a-z|A-Z|1-9]{1,99}){1,99}$");
         let valid = validDirectoryRegEx.test(value.trim());
         return valid;
     }

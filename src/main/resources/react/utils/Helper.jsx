@@ -19,6 +19,7 @@ class Helper {
             newState.process.toBeStarted.pop(value);
             newState.process.starting.pop(value);
             newState.process.completed.pop(value);
+            newState.process.failed.pop(value);
             let progressValue = Helper.calculateProgressValue(newState);
             newState.progressBar.value = progressValue;
         } else if(key === "failed") {
