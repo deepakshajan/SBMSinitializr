@@ -18,9 +18,9 @@ class AtomicProcessPanel extends React.Component {
     }
 
     render() {
-        let atomicProcessPanelStyle = {width:'-webkit-fill-available'};
-        let innerContainerStyle = {display:'table',width:'inherit',marginTop:5,height:'fit-content',position:'relative'};
-        let innerWrapperStyle = {height:25, display:'table-row', verticalAlign:'middle',backgroundColor:'lightgreen', position:'relative'};
+        let atomicProcessPanelStyle = {display:'flex',width:'100%'};
+        let innerContainerStyle = {width:'inherit',marginTop:5,height:'fit-content',position:'relative'};
+        let innerWrapperStyle = {verticalAlign:'middle',backgroundColor:'lightgreen', position:'relative'};
         let expandButtonStyle = {height:'inherit',display:'inline-block'};
         let titleDivStyle = {display:'inline-block',marginLeft:'2%',height:'inherit'};
         let titleSpanStyle = {verticalAlign:'middle',colour:'green',fontWeight:'bolder',fontSize:'medium'};
