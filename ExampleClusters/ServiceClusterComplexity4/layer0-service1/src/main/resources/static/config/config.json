@@ -1,0 +1,27 @@
+{
+"canvasWidth" : 500,
+"canvasHeight" : 500,
+"canvasDivX" : 25,
+"canvasDivY" : 25, 
+"canvasRestrictedColour" : "silver",
+
+"gamePieceColour" : "red",
+"gamePieceRadius" : 9,
+"gamePieceStartPosition" : [250,250],
+"gamePieceStep" : 5,
+"gamePieceStepInterval" : 75,
+"gamePieceSquareBuffer" : 1.001,
+
+"opponentPieceColour" : "black",
+"opponentPieceRadius" : 9,
+"opponentPieceStart" : [[10,10],[10,490],[490,10],[490,490]],
+"opponentPieceStep" : 5,
+"opponentPieceStepInterval" : 75,
+"randomMoveProbability" : 10,
+
+"catchCheckInterval" : 10,
+"scoreChangeInterval" : 250,
+"levelChangeScore" : 25,
+"levelUpSpeedChangeRate" : 5,
+"highValue" : 10000
+}

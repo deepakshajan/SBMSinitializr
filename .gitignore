@@ -1,7 +1,10 @@
 target/
 output/
+node/
 node_modules/
 !.mvn/wrapper/maven-wrapper.jar
+react-output.js
+.gradle/
 
 ### STS ###
 .apt_generated
