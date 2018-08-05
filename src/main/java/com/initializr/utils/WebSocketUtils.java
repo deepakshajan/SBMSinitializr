@@ -20,10 +20,9 @@
 
 package com.initializr.utils;
 
-import com.google.gson.Gson;
 import com.initializr.backbone.SBMSUtils;
-import com.initializr.backbone.SBMSWebSocketResponse;
 import com.initializr.socket.WebSocketHandler;
+import com.initializr.socket.response.SBMSWebSocketResponseImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -36,11 +35,16 @@ import org.springframework.stereotype.Component;
 public class WebSocketUtils implements SBMSUtils {
 
     @Autowired
+    private SBMSWebSocketResponseImpl sbmsWebSocketResponse;
+
+    @Autowired
     private WebSocketHandler webSocketHandler;
 
-    public synchronized void sendMessageToAllWebSocketSessions(SBMSWebSocketResponse response) {
+    public synchronized void sendMessageToAllWebSocketSessions(String key, String value) {
 
-        webSocketHandler.sendMessageToAllWebSocketSessions(response);
+        sbmsWebSocketResponse.clear();
+        sbmsWebSocketResponse.put(key, value);
+        webSocketHandler.sendMessageToAllWebSocketSessions(sbmsWebSocketResponse);
     }
 
 }

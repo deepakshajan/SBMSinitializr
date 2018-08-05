@@ -24,7 +24,6 @@ import com.initializr.backbone.SBMSThread;
 import com.initializr.process.operations.ProcessPoolOperations;
 import com.initializr.process.operations.ProcessThreadOperations;
 import com.initializr.service.request.StartProcessServiceRequest;
-import com.initializr.socket.response.SBMSWebSocketResponseImpl;
 import com.initializr.utils.WebSocketUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -52,9 +51,6 @@ public class ProcessThread implements SBMSThread<Boolean> {
 
     @Autowired
     private WebSocketUtils webSocketUtils;
-
-    @Autowired
-    private SBMSWebSocketResponseImpl webSocketResponse;
 
     /**
      * The process instance which correspond to the system process of the microservice.
@@ -94,8 +90,7 @@ public class ProcessThread implements SBMSThread<Boolean> {
     }
 
     private synchronized void notifyClient() {
-        webSocketResponse.put("starting", this.getProcessIdentifier());
-        webSocketUtils.sendMessageToAllWebSocketSessions(webSocketResponse);
+        webSocketUtils.sendMessageToAllWebSocketSessions("starting", this.getProcessIdentifier());
     }
 
     /**

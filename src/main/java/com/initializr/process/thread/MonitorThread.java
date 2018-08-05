@@ -29,7 +29,6 @@ import com.initializr.process.thread.completion.EvaluatorRequest;
 import com.initializr.process.thread.completion.MonitorThreadCompletionConditionEvaluator;
 import com.initializr.process.thread.lock.SmartProcessThreadLock;
 import com.initializr.service.request.StartProcessServiceRequest;
-import com.initializr.socket.response.SBMSWebSocketResponseImpl;
 import com.initializr.utils.ThreadUtils;
 import com.initializr.utils.WebSocketUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,9 +62,6 @@ public final class MonitorThread implements SBMSThread<Void> {
 
     @Autowired
     private WebSocketUtils webSocketUtils;
-
-    @Autowired
-    private SBMSWebSocketResponseImpl webSocketResponse;
 
     /**
      * Performs the monitoring actions on a single process.
@@ -216,14 +212,12 @@ public final class MonitorThread implements SBMSThread<Void> {
 
     private synchronized void notifyClientAboutCompletion() {
 
-        webSocketResponse.put("completed", this.request.getModuleName());
-        webSocketUtils.sendMessageToAllWebSocketSessions(webSocketResponse);
+        webSocketUtils.sendMessageToAllWebSocketSessions("completed", this.request.getModuleName());
     }
 
     private void notifyClientAboutFailure() {
 
-        webSocketResponse.put("failed", this.request.getModuleName());
-        webSocketUtils.sendMessageToAllWebSocketSessions(webSocketResponse);
+        webSocketUtils.sendMessageToAllWebSocketSessions("failed", this.request.getModuleName());
     }
 
     public synchronized void setRequest(StartProcessServiceRequest request) {

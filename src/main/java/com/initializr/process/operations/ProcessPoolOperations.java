@@ -50,9 +50,6 @@ public class ProcessPoolOperations {
     @Autowired
     private WebSocketUtils webSocketUtils;
 
-    @Autowired
-    private SBMSWebSocketResponseImpl webSocketResponse;
-
     /**
      * Add a process to the processPool.
      * <p>Adding the process to the process pool does not mean that the process is complete. It simply means that the process start procedure has been initiated.</p>
@@ -150,8 +147,7 @@ public class ProcessPoolOperations {
         processThreadOperations.destroyProcessForcibily(process);
         boolean hasStopped = processPoolProvider.removeProcessFromPool(processIdentifier);
 
-        webSocketResponse.put("stopped", processIdentifier);
-        webSocketUtils.sendMessageToAllWebSocketSessions(webSocketResponse);
+        webSocketUtils.sendMessageToAllWebSocketSessions("stopped", processIdentifier);
         LOGGER.info("***** Stopped process "+ processIdentifier +" *****");
         return hasStopped;
     }

@@ -54,7 +54,6 @@ class AtomicProcessPanel extends React.Component {
 
     calculateStatus() {
 
-        //TODO return if any condition sets status
         let status = "Waiting";
         let processName = this.props.title;
         if(this.props.processDetails.starting.includes(processName))

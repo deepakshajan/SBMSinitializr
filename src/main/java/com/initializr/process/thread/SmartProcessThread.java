@@ -25,7 +25,6 @@ import com.initializr.process.ProcessThreadManager;
 import com.initializr.process.operations.ProcessPoolOperations;
 import com.initializr.process.thread.lock.SmartProcessThreadLock;
 import com.initializr.service.request.StartProcessServiceRequest;
-import com.initializr.socket.response.SBMSWebSocketResponseImpl;
 import com.initializr.utils.FileUtils;
 import com.initializr.utils.ThreadUtils;
 import com.initializr.utils.WebSocketUtils;
@@ -60,9 +59,6 @@ public class SmartProcessThread implements SBMSThread<Boolean>{
 
     @Autowired
     private WebSocketUtils webSocketUtils;
-
-    @Autowired
-    private SBMSWebSocketResponseImpl webSocketResponse;
 
     @Autowired
     private ProcessPoolOperations processPoolOperations;
@@ -128,8 +124,7 @@ public class SmartProcessThread implements SBMSThread<Boolean>{
 
     private synchronized void notifyClient() {
 
-        webSocketResponse.put("toBeStarted", this.request.getModuleName());
-        webSocketUtils.sendMessageToAllWebSocketSessions(webSocketResponse);
+        webSocketUtils.sendMessageToAllWebSocketSessions("toBeStarted", this.request.getModuleName());
     }
 
 }
