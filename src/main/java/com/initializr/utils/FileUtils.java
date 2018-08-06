@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @author Deepak Shajan
@@ -56,7 +57,8 @@ public class FileUtils implements SBMSUtils{
 
     public List<File> getFilesAsList(String path) {
         File parentFile = getFile(path);
-        return Arrays.asList( parentFile.listFiles());
+        List<File> files = Arrays.asList( parentFile.listFiles()).stream().filter(this::filterUnwantedFiles).collect(Collectors.toList());
+        return files;
     }
 
     public Optional<File> getDepsFile(String path) {
@@ -105,5 +107,13 @@ public class FileUtils implements SBMSUtils{
                 fileInside.delete();
             }
         }
+    }
+
+
+    private boolean filterUnwantedFiles(File file) {
+
+        if(file.getName().contains(".") || file.listFiles()==null || file.listFiles().length == 0)
+            return false;
+        return true;
     }
 }

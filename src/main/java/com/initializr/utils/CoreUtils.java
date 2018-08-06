@@ -44,7 +44,7 @@ public class CoreUtils implements SBMSUtils {
         try {
             ClassPathScanningCandidateComponentProvider scanner = new ClassPathScanningCandidateComponentProvider(false);
             scanner.addIncludeFilter(new AnnotationTypeFilter(RestController.class));
-            Set<BeanDefinition> restControllers = scanner.findCandidateComponents("./");
+            Set<BeanDefinition> restControllers = scanner.findCandidateComponents("com.initializr");
 
             for(BeanDefinition restController : restControllers) {
                 String controllerName = restController.getBeanClassName();
