@@ -1,0 +1,42 @@
+plugins {
+    id 'org.springframework.boot' version '1.5.9.RELEASE'
+    id 'com.moowork.node' version '1.2.0'
+    id 'com.moowork.grunt' version '1.2.0'
+}
+
+apply plugin : 'java'
+
+
+repositories {
+    mavenCentral()
+}
+
+node {
+    version = '8.9.3'
+    download = true
+}
+
+
+task runGruntTasks(type: GruntTask, dependsOn:[installGrunt]) {
+    //keep this empty task to execute all the grunt tasks defined in gruntFile.js
+}
+
+installGrunt.dependsOn nodeSetup,npmSetup,npmInstall
+
+task runNpmTest(type: NpmTask, dependsOn:[nodeSetup,npmInstall,npmSetup]) {
+    args = ['test']
+}
+
+clean.dependsOn runGruntTasks
+test.dependsOn runNpmTest
+
+
+dependencies {
+    compile 'org.springframework.boot:spring-boot-starter-web'
+    runtime 'org.springframework.boot:spring-boot-starter-tomcat'
+    compile 'javax.servlet:jstl'
+    compile 'org.apache.tomcat.embed:tomcat-embed-jasper'
+    runtime 'org.eclipse.jdt.core.compiler:ecj:4.6.1'
+    testCompile 'org.springframework.boot:spring-boot-starter-test'
+    compile 'com.google.code.gson:gson:2.8.1'
+}
